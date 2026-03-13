@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier une Actualité - </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Roboto:wght@300;400;500&family=Playfair+Display:italic,wght@600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'gold-darker': '#B8860B',
+                        'violet-spiritual': '#8A2BE2',
+                        'soft-white': '#F5F5F5',
+                        'card-bg': '#262626',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                        body: ['Roboto', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: #FFFFFF;
+        }
+        .glass-card {
+            background: rgba(38, 38, 38, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        .custom-input {
+            background: #333;
+            border: 1px solid #444;
+            color: white;
+        }
+        .custom-input:focus {
+            border-color: #FFD700;
+            outline: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar Admin -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-deep-black border-r border-gold/20 z-40">
+        <div class="p-6">
+            <div class="w-12 h-12 gold-gradient rounded-full flex items-center justify-center text-deep-black font-bold text-xl mb-4">Département</div>
+            <h2 class="font-display font-bold text-lg">Dashboard Admin</h2>
+            <p class="text-gray-500 text-xs">Gestion du département</p>
+        </div>
+        
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="{% url 'dashboard_admin' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Vue d'ensemble
+            </a>
+            <a href="{% url 'communication' %}" class="flex items-center gap-3 px-4 py-3 bg-gold/10 text-gold rounded-xl">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                Communication
+            </a>
+            <a href="{% url 'accueil' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors mt-8 border-t border-gray-800 pt-6">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                Retour au site
+            </a>
+            <a href="{% url 'deconnexion' %}" class="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-900/20 rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Déconnexion
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-display font-black">Modifier <span class="text-gold">l'Actualité</span></h1>
+                <p class="text-gray-400">Modification de l'actualité: <span class="text-white font-semibold">{{ actualite.titre }}</span></p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'communication' %}" class="px-4 py-2 border border-gray-600 text-gray-400 rounded-lg hover:bg-gray-800 transition-colors">
+                    Retour à la communication
+                </a>
+            </div>
+        </header>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg mb-2 {% if message.tags == 'success' %}bg-green-900/40 text-green-400 border border-green-500/30{% else %}bg-red-900/40 text-red-400 border border-red-500/30{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Edit Form -->
+        <div class="glass-card rounded-2xl p-6">
+            <form method="POST" action="{% url 'modifier_actualite' actualite.id %}" class="space-y-6" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Titre -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2">Titre *</label>
+                    <input type="text" name="titre" value="{{ actualite.titre }}" required 
+                        class="w-full px-4 py-3 rounded-lg custom-input"
+                        placeholder="Titre de l'actualité">
+                </div>
+
+                <!-- Contenu -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2">Contenu *</label>
+                    <textarea name="contenu" rows="6" required 
+                        class="w-full px-4 py-3 rounded-lg custom-input"
+                        placeholder="Contenu de l'actualité...">{{ actualite.contenu }}</textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Catégorie -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-2">Catégorie *</label>
+                        <select name="categorie" required 
+                            class="w-full px-4 py-3 rounded-lg custom-input">
+                            <option value="CELEBRATION" {% if actualite.categorie == 'CELEBRATION' %}selected{% endif %}>Célébration</option>
+                            <option value="FORMATION" {% if actualite.categorie == 'FORMATION' %}selected{% endif %}>Formation</option>
+                            <option value="COMMUNION" {% if actualite.categorie == 'COMMUNION' %}selected{% endif %}>Communion</option>
+                            <option value="ANNONCE" {% if actualite.categorie == 'ANNONCE' %}selected{% endif %}>Annonce</option>
+                            <option value="AUTRE" {% if actualite.categorie == 'AUTRE' %}selected{% endif %}>Autre</option>
+                        </select>
+                    </div>
+
+                    <!-- Image actuelle -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-2">Image actuelle</label>
+                        {% if actualite.image %}
+                        <div class="mb-2">
+                            <img src="{{ actualite.image.url }}" alt="Image actuelle" class="w-32 h-32 object-cover rounded-lg">
+                        </div>
+                        {% else %}
+                        <p class="text-gray-500 text-sm mb-2">Aucune image</p>
+                        {% endif %}
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Changer l'image (optionnel)</label>
+                        <input type="file" name="image" id="image" accept="image/*" 
+                            class="w-full px-4 py-3 rounded-lg custom-input text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gold file:text-deep-black hover:file:bg-yellow-400">
+                    </div>
+                </div>
+
+                <!-- Urgent -->
+                <div class="flex items-center gap-3 p-4 bg-red-900/10 rounded-lg border border-red-500/30">
+                    <input type="checkbox" name="est_urgent" id="est_urgent" 
+                        class="w-5 h-5 rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-red-500"
+                        {% if actualite.est_urgent %}checked{% endif %}>
+                    <label for="est_urgent" class="text-sm font-bold text-red-400">
+                        Marquer comme urgent
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end gap-4 pt-4">
+                    <a href="{% url 'communication' %}" 
+                        class="px-6 py-3 border border-gray-600 text-gray-400 rounded-lg font-bold hover:bg-gray-800 transition-colors">
+                        Annuler
+                    </a>
+                    <button type="submit" 
+                        class="px-6 py-3 bg-gold text-deep-black rounded-lg font-bold hover:bg-yellow-400 transition-colors">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
+

@@ -1,0 +1,117 @@
+{% extends 'responsable/base_responsable.html' %}
+
+{% block title %}Profil de {{ membre.prenom }} {{ membre.nom }}{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-4xl font-display font-bold text-pure-blue mb-2">Profil du <span class="text-pure-green">Membre</span></h1>
+            <p class="text-gray-600">{{ membre.prenom }} {{ membre.nom }}</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="{% url 'modifier_membre' membre.id %}" class="px-4 py-2 bg-pure-green text-white rounded-lg font-bold text-sm hover:bg-pure-green-dark transition-colors">
+                Modifier
+            </a>
+            <a href="{% url 'liste_membres' %}" class="px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                Retour à la liste
+            </a>
+        </div>
+    </header>
+
+    <!-- Profile Info -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Photo et Infos principales -->
+        <div class="glass-card p-6 rounded-2xl">
+            <div class="text-center">
+                <div class="w-24 h-24 blue-gradient rounded-full flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4">
+                    {{ membre.prenom|first|upper }}{{ membre.nom|first|upper }}
+                </div>
+                <h2 class="text-xl font-bold text-gray-800">{{ membre.prenom }} {{ membre.nom }}</h2>
+                <p class="text-pure-blue font-semibold">{{ membre.get_role_display|default:membre.role }}</p>
+                <span class="inline-block mt-2 px-3 py-1 {% if membre.status == 'ACTIF' %}bg-green-100 text-green-700{% else %}bg-gray-100 text-gray-600{% endif %} rounded-full text-xs font-bold">
+                    {{ membre.get_status_display|default:membre.status }}
+                </span>
+            </div>
+            
+            <div class="mt-6 space-y-4">
+                <div>
+                    <p class="text-gray-500 text-xs uppercase font-semibold">Email</p>
+                    <p class="text-gray-800">{{ membre.email|default:"-" }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-xs uppercase font-semibold">Téléphone</p>
+                    <p class="text-gray-800">{{ membre.telephone|default:"-" }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-xs uppercase font-semibold">Adresse</p>
+                    <p class="text-gray-800">{{ membre.adresse|default:"-" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Autres infos -->
+        <div class="glass-card p-6 rounded-2xl col-span-2">
+            <h3 class="font-bold text-lg mb-4 text-pure-blue">Informations supplémentaires</h3>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <p class="text-gray-500 text-xs uppercase font-semibold">Est Sentinelle</p>
+                    <p class="font-semibold {% if membre.est_sentinelle %}text-purple-600{% else %}text-gray-500{% endif %}">
+                        {% if membre.est_sentinelle %}Oui{% else %}Non{% endif %}
+                    </p>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <p class="text-gray-500 text-xs uppercase font-semibold">Groupe Sentinelle</p>
+                    <p class="font-semibold text-gray-800">{{ membre.groupe_sentinelle|default:"-" }}</p>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <p class="text-gray-500 text-xs uppercase font-semibold">Département</p>
+                    <p class="font-semibold text-gray-800">{{ membre.get_departement_display|default:membre.departement|default:"-" }}</p>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <p class="text-gray-500 text-xs uppercase font-semibold">Responsable</p>
+                    <p class="font-semibold {% if membre.est_responsable %}text-pure-blue{% else %}text-gray-500{% endif %}">
+                        {% if membre.est_responsable %}Oui{% else %}Non{% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historique des présences -->
+    <div class="glass-card p-6 rounded-2xl mb-6">
+        <h3 class="font-bold text-lg mb-4 text-pure-blue">Historique des présences</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-gray-100 text-gray-700 uppercase text-xs font-bold">
+                    <tr>
+                        <th class="p-3">Date</th>
+                        <th class="p-3">Activité</th>
+                        <th class="p-3">Statut</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for presence in presences %}
+                    <tr class="hover:bg-blue-50">
+                        <td class="p-3 text-gray-800">{{ presence.date }}</td>
+                        <td class="p-3 text-gray-700">{{ presence.get_type_activite_display|default:presence.type_activite }}</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 {% if presence.status == 'PRESENT' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded-full text-xs font-bold">
+                                {{ presence.get_status_display|default:presence.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="p-4 text-center text-gray-500">Aucune présence enregistrée</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmer la suppression - </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'gold-darker': '#B8860B',
+                        'card-bg': '#262626',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #1A1A1A; color: #FFFFFF; }
+        .glass-card { background: rgba(38, 38, 38, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="glass-card p-8 rounded-2xl max-w-md w-full mx-4">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-red-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            
+            <h2 class="text-2xl font-display font-bold text-white mb-4">Confirmer la suppression</h2>
+            
+            <p class="text-gray-400 mb-2">
+                Êtes-vous sûr de vouloir supprimer toutes les entrées de logs?
+            </p>
+            
+            <p class="text-red-400 font-semibold mb-6">
+                Cette action est irréversible et {{ count }} entrées seront définitivement supprimées.
+            </p>
+            
+            <div class="flex gap-4 justify-center">
+                <a href="{% url 'liste_activites' %}" class="px-6 py-3 border border-gray-600 text-gray-400 rounded-lg hover:bg-white/10 transition-colors">
+                    Annuler
+                </a>
+                <form method="POST" action="{% url 'supprimer_toutes_activites' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold">
+                        Confirmer la suppression
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

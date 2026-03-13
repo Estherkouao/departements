@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil de {{ membre.prenom }} {{ membre.nom }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'gold-darker': '#B8860B',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f0f0f; color: #FFFFFF; }
+        .glass-card { background: rgba(38, 38, 38, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen">
+    {% include 'partials/sidebar_admin.html' %}
+
+    <main class="ml-64 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-display font-black">Profil du <span class="text-primary-age">Membre</span></h1>
+                <p class="text-gray-500">{{ membre.prenom }} {{ membre.nom }}</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'modifier_membre' membre.id %}" class="px-4 py-2 bg-primary-age text-deep-black rounded-lg font-bold text-sm hover:bg-yellow-400 transition-colors">
+                    Modifier
+                </a>
+                <a href="{% url 'liste_membres' %}" class="px-4 py-2 border border-gray-600 text-gray-500 rounded-lg hover:bg-gray-800 transition-colors">
+                    Retour à la liste
+                </a>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card p-6 rounded-2xl">
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-gradient-to-br from-gold to-yellow-600 rounded-full flex items-center justify-center text-deep-black font-bold text-3xl mx-auto mb-4">
+                        {{ membre.prenom|first|upper }}{{ membre.nom|first|upper }}
+                    </div>
+                    <h2 class="text-xl font-bold">{{ membre.prenom }} {{ membre.nom }}</h2>
+                    <p class="text-primary-age font-semibold">{{ membre.get_role_display|default:membre.role }}</p>
+                    <span class="inline-block mt-2 px-3 py-1 {% if membre.status == 'ACTIF' %}bg-green-900/40 text-green-400{% else %}bg-gray-900/40 text-gray-500{% endif %} rounded-full text-xs">
+                        {{ membre.get_status_display|default:membre.status }}
+                    </span>
+                </div>
+                
+                <div class="mt-6 space-y-4">
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase">Email</p>
+                        <p>{{ membre.email|default:"-" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase">Téléphone</p>
+                        <p>{{ membre.telephone|default:"-" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase">Adresse</p>
+                        <p>{{ membre.adresse|default:"-" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-2xl col-span-2">
+                <h3 class="font-bold text-lg mb-4 text-primary-age">Informations supplémentaires</h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-white/5 rounded-lg">
+                        <p class="text-gray-500 text-xs uppercase">Est Sentinelle</p>
+                        <p class="font-semibold {% if membre.est_sentinelle %}text-purple-400{% else %}text-gray-500{% endif %}">
+                            {% if membre.est_sentinelle %}Oui{% else %}Non{% endif %}
+                        </p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-lg">
+                        <p class="text-gray-500 text-xs uppercase">Groupe Sentinelle</p>
+                        <p class="font-semibold">{{ membre.groupe_sentinelle|default:"-" }}</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-lg">
+                        <p class="text-gray-500 text-xs uppercase">Département</p>
+                        <p class="font-semibold">{{ membre.get_departement_display|default:membre.departement|default:"-" }}</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-lg">
+                        <p class="text-gray-500 text-xs uppercase">Responsable</p>
+                        <p class="font-semibold {% if membre.est_responsable %}text-primary-age{% endif %}">
+                            {% if membre.est_responsable %}Oui{% else %}Non{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl mb-6">
+            <h3 class="font-bold text-lg mb-4 text-primary-age">Historique des présences</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-deep-black text-gray-500 uppercase text-xs">
+                        <tr>
+                            <th class="p-3">Date</th>
+                            <th class="p-3">Activité</th>
+                            <th class="p-3">Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        {% for presence in presences %}
+                        <tr class="hover:bg-white/5">
+                            <td class="p-3">{{ presence.date }}</td>
+                            <td class="p-3">{{ presence.get_type_activite_display|default:presence.type_activite }}</td>
+                            <td class="p-3">
+                                <span class="px-2 py-1 {% if presence.status == 'PRESENT' %}bg-green-900/40 text-green-400{% else %}bg-red-900/40 text-red-400{% endif %} rounded-full text-xs">
+                                    {{ presence.get_status_display|default:presence.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="p-4 text-center text-gray-500">Aucune présence enregistrée</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

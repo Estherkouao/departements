@@ -1,0 +1,25 @@
+services:
+  pg_departements:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    build: .
+    depends_on:
+      - pg_departements
+    env_file:
+      - .env
+    ports:
+      - "8005:8000"
+    volumes:
+      - ./app:/app
+
+volumes:
+  pgdata:

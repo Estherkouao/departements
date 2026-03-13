@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Responsables - Départements</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f0fdfa; color: #1A1A1A; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0, 108, 103, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar Admin -->
+    {% include 'partials/sidebar_admin.html' %}
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-display font-black">Gestion des <span class="text-[#006C67]">Responsables</span></h1>
+                <p class="text-gray-500">Gérez les responsables de chaque département</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'dashboard_admin' %}" class="px-4 py-2 bg-[#006C67] hover:bg-[#00554F] text-white rounded-lg font-bold">
+                    ← Dashboard
+                </a>
+            </div>
+        </header>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4 p-4 rounded-lg" role="alert">
+                    <span class="text-gray-800">{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="text-gray-500">
+                <span class="font-semibold text-gray-800">{{ departements.count }}</span> département(s) trouvé(s)
+            </div>
+            <a href="{% url 'creer_responsable' %}" class="px-6 py-3 bg-[#006C67] hover:bg-[#00554F] text-white font-bold rounded-xl flex items-center gap-2 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Créer un Responsable
+            </a>
+        </div>
+
+        <!-- Table Card -->
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-[#006C67]/10 border-b border-[#006C67]/20">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-[#006C67] font-bold">Département</th>
+                        <th class="px-6 py-4 text-left text-[#006C67] font-bold">Responsable</th>
+                        <th class="px-6 py-4 text-left text-[#006C67] font-bold">Email</th>
+                        <th class="px-6 py-4 text-left text-[#006C67] font-bold">Téléphone</th>
+                        <th class="px-6 py-4 text-left text-[#006C67] font-bold">Compte</th>
+                        <th class="px-6 py-4 text-left text-[#006C67] font-bold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for dept in departements %}
+                    <tr class="hover:bg-[#006C67]/5 transition-colors">
+                        <td class="px-6 py-4">
+                            <span class="font-bold text-gray-800">{{ dept.get_nom_display }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if dept.responsable %}
+                                <span class="text-gray-800">{{ dept.responsable.prenom }} {{ dept.responsable.nom }}</span>
+                            {% else %}
+                                <span class="text-gray-500 italic">Aucun</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">
+                            {% if dept.responsable %}{{ dept.responsable.email|default:"-" }}{% else %}-{% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-gray-500">
+                            {% if dept.responsable %}{{ dept.responsable.telephone|default:"-" }}{% else %}-{% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if dept.user %}
+                                <span class="px-3 py-1 bg-[#006C67]/20 text-[#006C67] rounded-full text-sm font-bold">{{ dept.user.username }}</span>
+                            {% else %}
+                                <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded-full text-sm">Pas de compte</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if dept.a_responsable %}
+                                <div class="flex items-center gap-2">
+                                    <a href="{% url 'modifier_responsable' dept.id %}" class="p-2 bg-[#006C67]/20 hover:bg-[#006C67]/30 text-[#006C67] rounded-lg transition-colors" title="Modifier">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                    </a>
+                                    <button type="button" class="p-2 bg-[#006C67]/20 hover:bg-[#006C67]/30 text-[#006C67] rounded-lg transition-colors" data-toggle="modal" data-target="#resetModal{{ dept.id }}" title="Réinitialiser mot de passe">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                                    </button>
+                                    <button type="button" class="p-2 bg-[#B21E28]/20 hover:bg-[#B21E28]/30 text-[#B21E28] rounded-lg transition-colors" data-toggle="modal" data-target="#deleteModal{{ dept.id }}" title="Supprimer">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'creer_responsable' %}?departement={{ dept.nom }}" class="px-4 py-2 bg-[#006C67] hover:bg-[#00554F] text-white font-bold rounded-lg text-sm transition-colors">
+                                    + Créer
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    
+                    <!-- Modal Reset Password -->
+                    {% if dept.a_responsable %}
+                    <div class="modal fade" id="resetModal{{ dept.id }}" tabindex="-1" role="dialog" style="display: none;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="glass-card rounded-2xl p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-xl font-bold text-[#006C67]">Réinitialiser le mot de passe</h3>
+                                    <button type="button" class="text-gray-500 hover:text-gray-800" data-dismiss="modal">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
+                                <form method="post" action="{% url 'reinitialiser_mot_de_passe' dept.id %}">
+                                    {% csrf_token %}
+                                    <p class="text-gray-500 mb-4">Réinitialiser pour <strong class="text-gray-800">{{ dept.responsable.prenom }} {{ dept.responsable.nom }}</strong></p>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-500 text-sm mb-2">Nouveau mot de passe:</label>
+                                        <input type="password" name="new_password" class="w-full px-4 py-3 bg-white border border-[#006C67]/30 rounded-xl text-gray-800 focus:border-[#006C67] focus:outline-none" required>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <button type="button" class="flex-1 px-4 py-3 bg-gray-400 hover:bg-gray-500 text-white rounded-xl transition-colors" data-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="flex-1 px-4 py-3 bg-[#006C67] hover:bg-[#00554F] text-white font-bold rounded-xl transition-colors">Réinitialiser</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Modal Delete -->
+                    {% if dept.a_responsable %}
+                    <div class="modal fade" id="deleteModal{{ dept.id }}" tabindex="-1" role="dialog" style="display: none;">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="glass-card rounded-2xl p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-xl font-bold text-[#B21E28]">Confirmer la suppression</h3>
+                                    <button type="button" class="text-gray-500 hover:text-gray-800" data-dismiss="modal">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
+                                <form method="post" action="{% url 'supprimer_responsable' dept.id %}">
+                                    {% csrf_token %}
+                                    <p class="text-gray-500 mb-4">Voulez-vous supprimer le responsable du département <strong class="text-gray-800">{{ dept.get_nom_display }}</strong>?</p>
+                                    <p class="text-[#B21E28] text-sm mb-4">⚠️ Cette action désactivera le compte utilisateur.</p>
+                                    <div class="flex gap-3">
+                                        <button type="button" class="flex-1 px-4 py-3 bg-gray-400 hover:bg-gray-500 text-white rounded-xl transition-colors" data-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="flex-1 px-4 py-3 bg-[#B21E28] hover:bg-[#8B1820] text-white font-bold rounded-xl transition-colors">Supprimer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                            Aucun département trouvé. Veuillez d'abord créer les départements.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS for Modals -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Initialize modals
+        $(document).ready(function() {
+            // Show modals from URL hash
+            if (window.location.hash) {
+                var hash = window.location.hash.substring(1);
+                $('#' + hash).modal('show');
+            }
+        });
+    </script>
+</body>
+</html>
+

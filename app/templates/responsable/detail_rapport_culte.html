@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block title %}Détail Rapport de Culte{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-6 gap-4">
+        <div>
+            <h1 class="text-4xl font-display font-bold text-pure-blue mb-2">Détail du <span class="text-pure-green">Rapport</span></h1>
+            <p class="text-gray-600 uppercase tracking-widest text-xs">Rapport de culte du {{ rapport.date_culte|date:"d/m/Y" }}</p>
+        </div>
+        <a href="{% url 'liste_rapports_culte' %}" class="px-6 py-3 border-2 border-pure-blue text-pure-blue rounded-lg font-bold text-sm hover:bg-blue-50 transition-all">
+            Retour à la liste
+        </a>
+    </div>
+
+    <!-- Report Summary -->
+    <div class="glass-card p-6 rounded-2xl mb-6 border-l-4 border-pure-blue">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div>
+                <p class="text-gray-500 text-xs uppercase font-semibold mb-1">Date du culte</p>
+                <p class="font-bold text-lg text-gray-900">{{ rapport.date_culte|date:"d/m/Y" }}</p>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs uppercase font-semibold mb-1">Département</p>
+                <p class="font-bold text-lg text-pure-blue">{{ rapport.nom_departement|default:"-" }}</p>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs uppercase font-semibold mb-1">Responsable</p>
+                <p class="font-bold text-lg text-gray-900">{{ rapport.responsable.prenom }} {{ rapport.responsable.nom }}</p>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs uppercase font-semibold mb-1">Statut</p>
+                <span class="px-3 py-1 {% if rapport.statut == 'SOUMIS' %}bg-yellow-100 text-yellow-700{% elif rapport.statut == 'APPROUVE' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded-full text-sm font-bold">
+                    {{ rapport.get_statut_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Details -->
+    <div class="mb-6">
+        <h2 class="text-2xl font-display font-bold text-pure-blue mb-4">1. Présence des serviteurs</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Prière 1er culte -->
+            <div class="glass-card p-6 rounded-xl border-l-4 border-purple-500">
+                <h3 class="font-bold text-lg mb-4 text-purple-700">Prière 1er Culte</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Nombre</span>
+                        <span class="font-bold text-gray-900">{{ rapport.priere_1_nbre }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Programmé</span>
+                        <span class="font-bold text-gray-900">{{ rapport.priere_1_programme }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Absents</span>
+                        <span class="font-bold text-red-600">{{ rapport.priere_1_absent }}</span>
+                    </div>
+                    {% if rapport.priere_1_motifs %}
+                    <div class="mt-2 pt-2 border-t-2 border-gray-200">
+                        <span class="text-gray-600 text-xs font-semibold">Motifs:</span>
+                        <p class="text-sm text-gray-700 mt-1">{{ rapport.priere_1_motifs }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 1er Culte -->
+            <div class="glass-card p-6 rounded-xl border-l-4 border-blue-500">
+                <h3 class="font-bold text-lg mb-4 text-pure-blue">1er Culte</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Nombre</span>
+                        <span class="font-bold text-gray-900">{{ rapport.culte_1_nbre }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Programmé</span>
+                        <span class="font-bold text-gray-900">{{ rapport.culte_1_programme }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Absents</span>
+                        <span class="font-bold text-red-600">{{ rapport.culte_1_absent }}</span>
+                    </div>
+                    {% if rapport.culte_1_motifs %}
+                    <div class="mt-2 pt-2 border-t-2 border-gray-200">
+                        <span class="text-gray-600 text-xs font-semibold">Motifs:</span>
+                        <p class="text-sm text-gray-700 mt-1">{{ rapport.culte_1_motifs }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Prière 2ème culte -->
+            <div class="glass-card p-6 rounded-xl border-l-4 border-purple-500">
+                <h3 class="font-bold text-lg mb-4 text-purple-700">Prière 2ème Culte</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Nombre</span>
+                        <span class="font-bold text-gray-900">{{ rapport.priere_2_nbre }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Programmé</span>
+                        <span class="font-bold text-gray-900">{{ rapport.priere_2_programme }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Absents</span>
+                        <span class="font-bold text-red-600">{{ rapport.priere_2_absent }}</span>
+                    </div>
+                    {% if rapport.priere_2_motifs %}
+                    <div class="mt-2 pt-2 border-t-2 border-gray-200">
+                        <span class="text-gray-600 text-xs font-semibold">Motifs:</span>
+                        <p class="text-sm text-gray-700 mt-1">{{ rapport.priere_2_motifs }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 2ème Culte -->
+            <div class="glass-card p-6 rounded-xl border-l-4 border-blue-500">
+                <h3 class="font-bold text-lg mb-4 text-pure-blue">2ème Culte</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Nombre</span>
+                        <span class="font-bold text-gray-900">{{ rapport.culte_2_nbre }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Programmé</span>
+                        <span class="font-bold text-gray-900">{{ rapport.culte_2_programme }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Absents</span>
+                        <span class="font-bold text-red-600">{{ rapport.culte_2_absent }}</span>
+                    </div>
+                    {% if rapport.culte_2_motifs %}
+                    <div class="mt-2 pt-2 border-t-2 border-gray-200">
+                        <span class="text-gray-600 text-xs font-semibold">Motifs:</span>
+                        <p class="text-sm text-gray-700 mt-1">{{ rapport.culte_2_motifs }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Culte des Boss -->
+            <div class="glass-card p-6 rounded-xl border-l-4 border-green-500">
+                <h3 class="font-bold text-lg mb-4 text-pure-green-dark">Culte des Boss</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Nombre</span>
+                        <span class="font-bold text-gray-900">{{ rapport.culte_boss_nbre }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Programmé</span>
+                        <span class="font-bold text-gray-900">{{ rapport.culte_boss_programme }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Absents</span>
+                        <span class="font-bold text-red-600">{{ rapport.culte_boss_absent }}</span>
+                    </div>
+                    {% if rapport.culte_boss_motifs %}
+                    <div class="mt-2 pt-2 border-t-2 border-gray-200">
+                        <span class="text-gray-600 text-xs font-semibold">Motifs:</span>
+                        <p class="text-sm text-gray-700 mt-1">{{ rapport.culte_boss_motifs }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Réveil Sentinelles -->
+            <div class="glass-card p-6 rounded-xl border-l-4 border-indigo-500">
+                <h3 class="font-bold text-lg mb-4 text-indigo-700">Réveil Sentinelles</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Nombre</span>
+                        <span class="font-bold text-gray-900">{{ rapport.reveil_sentinelles_nbre }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Programmé</span>
+                        <span class="font-bold text-gray-900">{{ rapport.reveil_sentinelles_programme }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Absents</span>
+                        <span class="font-bold text-red-600">{{ rapport.reveil_sentinelles_absent }}</span>
+                    </div>
+                    {% if rapport.reveil_sentinelles_motifs %}
+                    <div class="mt-2 pt-2 border-t-2 border-gray-200">
+                        <span class="text-gray-600 text-xs font-semibold">Motifs:</span>
+                        <p class="text-sm text-gray-700 mt-1">{{ rapport.reveil_sentinelles_motifs }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Observations Section -->
+    <div class="glass-card p-6 rounded-2xl mb-6 border-l-4 border-pure-blue">
+        <h2 class="text-2xl font-display font-bold text-pure-blue mb-4">2. Observations générales et recommandations</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <p class="text-gray-700 text-sm font-bold mb-2">Points forts</p>
+                <div class="bg-green-50 p-4 rounded-lg min-h-[100px] border-2 border-green-200">
+                    <p class="text-sm text-gray-700">{{ rapport.points_forts|default:"-" }}</p>
+                </div>
+            </div>
+            <div>
+                <p class="text-gray-700 text-sm font-bold mb-2">Difficultés</p>
+                <div class="bg-orange-50 p-4 rounded-lg min-h-[100px] border-2 border-orange-200">
+                    <p class="text-sm text-gray-700">{{ rapport.difficultes|default:"-" }}</p>
+                </div>
+            </div>
+            <div>
+                <p class="text-gray-700 text-sm font-bold mb-2">Recommandations</p>
+                <div class="bg-blue-50 p-4 rounded-lg min-h-[100px] border-2 border-blue-200">
+                    <p class="text-sm text-gray-700">{{ rapport.recommandations|default:"-" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transmission des résumés - NOMBRE SEULEMENT -->
+    <div class="glass-card p-6 rounded-2xl border-l-4 border-pure-green">
+        <h2 class="text-2xl font-display font-bold text-pure-green-dark mb-4">3. Transmission du résumé du culte</h2>
+        
+        {% if transmission_culte_1 > 0 or transmission_culte_2 > 0 or transmission_culte_boss > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                <p class="text-sm text-gray-600">1er Culte</p>
+                <p class="text-3xl font-bold text-green-600">{{ transmission_culte_1|default:"0" }}</p>
+                <p class="text-xs text-gray-500">résumé(s) transmis</p>
+            </div>
+            <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                <p class="text-sm text-gray-600">2ème Culte</p>
+                <p class="text-3xl font-bold text-blue-600">{{ transmission_culte_2|default:"0" }}</p>
+                <p class="text-xs text-gray-500">résumé(s) transmis</p>
+            </div>
+            <div class="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                <p class="text-sm text-gray-600">Culte des Boss</p>
+                <p class="text-3xl font-bold text-purple-600">{{ transmission_culte_boss|default:"0" }}</p>
+                <p class="text-xs text-gray-500">résumé(s) transmis</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-8 text-gray-500">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <p>Aucune transmission de résumé enregistrée pour ce rapport.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

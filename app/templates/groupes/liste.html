@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Groupes - </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'violet-spiritual': '#8A2BE2',
+                        'card-bg': '#262626',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #1A1A1A; color: #FFFFFF; }
+        .glass-card { background: rgba(38, 38, 38, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 215, 0, 0.1); }
+    </style>
+</head>
+<body class="font-sans">
+    <header class="fixed top-0 w-full z-50 glass-card border-b border-gold/20 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-700 rounded-full flex items-center justify-center text-deep-black font-bold text-xl">Département</div>
+                <h1 class="font-display font-extrabold text-xl text-white">ORGANISATION <span class="text-gold">DES DEPARTEMENTS</span></h1>
+            </div>
+            <a href="{% url 'departement' %}" class="px-4 py-2 border border-gold text-gold rounded-lg text-sm font-bold hover:bg-gold hover:text-deep-black">Retour</a>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-12 px-4 max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-display font-bold text-gold">GROUPES DE SERVICE</h2>
+            <a href="#" class="px-4 py-2 bg-gold text-deep-black rounded-lg font-bold text-sm">+ Nouveau groupe</a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for groupe in groupes %}
+            <div class="glass-card rounded-2xl p-6" style="border-top: 4px solid {{ groupe.couleur }}">
+                <h3 class="text-xl font-bold mb-2">{{ groupe.nom_groupe }}</h3>
+                <p class="text-gray-400 text-sm mb-4">{{ groupe.description|truncatewords:15 }}</p>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-gray-500">{{ groupe.membres.count }} membres</span>
+                    <span class="text-gold">{{ groupe.jour_service }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full glass-card p-8 rounded-2xl text-center">
+                <p class="text-gray-400">Aucun groupe de service défini.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
+

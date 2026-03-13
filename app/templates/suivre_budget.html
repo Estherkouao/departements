@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi des Budgets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'gold-darker': '#B8860B',
+                        'violet-spiritual': '#8A2BE2',
+                        'card-bg': '#262626',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f0f0f; color: #FFFFFF; }
+        .glass-card { background: rgba(38, 38, 38, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.1); }
+        .gradient-gold { background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%); }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-deep-black border-r border-gold/20 z-40">
+        <div class="p-6">
+            <div class="w-12 h-12 gradient-gold rounded-full flex items-center justify-center text-deep-black font-bold text-xl mb-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h2 class="font-display font-bold text-lg">Trésor & Finance</h2>
+            <p class="text-gray-500 text-xs">Commission de gestion</p>
+        </div>
+        
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="{% url 'tresor_finance' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Vue d'ensemble
+            </a>
+            <a href="{% url 'suivre_budget' %}" class="flex items-center gap-3 px-4 py-3 bg-gold/10 text-gold rounded-xl">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                Budget
+            </a>
+            <a href="{% url 'liste_impayes' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Impayés
+            </a>
+            <a href="{% url 'finance' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Transactions
+            </a>
+            <a href="{% url 'dashboard_admin' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors mt-8 border-t border-gray-800 pt-6">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                Dashboard Admin
+            </a>
+            <a href="{% url 'deconnexion' %}" class="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-900/20 rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Déconnexion
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-display font-black">Suivi des <span class="text-gold">Budgets</span></h1>
+                <p class="text-gray-400">Année: <span class="text-white font-semibold">{{ annee }}</span></p>
+            </div>
+            <div class="flex items-center gap-4">
+                <form method="get" class="flex gap-2">
+                    <select name="annee" class="p-3 rounded-lg bg-gray-800 border border-gray-700 text-white">
+                        <option value="2024" {% if annee == 2024 %}selected{% endif %}>2024</option>
+                        <option value="2025" {% if annee == 2025 %}selected{% endif %}>2025</option>
+                        <option value="2026" {% if annee == 2026 %}selected{% endif %}>2026</option>
+                        <option value="2027" {% if annee == 2027 %}selected{% endif %}>2027</option>
+                        <option value="2028" {% if annee == 2028 %}selected{% endif %}>2028</option>
+                    </select>
+                    <button type="submit" class="px-4 py-2 bg-gold text-deep-black font-bold rounded-lg">Filtrer</button>
+                </form>
+            </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-blue-500">
+                <p class="text-gray-400 text-xs uppercase">Total Prévu</p>
+                <p class="text-3xl font-black text-blue-400 mt-2">{{ total_prevu|default:"0" }} <span class="text-lg">CFA</span></p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-green-500">
+                <p class="text-gray-400 text-xs uppercase">Total Réalisé</p>
+                <p class="text-3xl font-black text-green-400 mt-2">{{ total_realise|default:"0" }} <span class="text-lg">CFA</span></p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-gold">
+                <p class="text-gray-400 text-xs uppercase">Taux d'Exécution</p>
+                <p class="text-3xl font-black text-gold mt-2">{{ taux_execution|floatformat:1 }}%</p>
+            </div>
+        </div>
+
+        <!-- Budgets Table -->
+        <div class="glass-card rounded-2xl p-6">
+            <h3 class="font-bold text-lg mb-6">Budgets par Catégorie</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-xs text-gray-400 border-b border-gray-700">
+                            <th class="pb-3">Catégorie</th>
+                            <th class="pb-3">Période</th>
+                            <th class="pb-3 text-right">Prévu</th>
+                            <th class="pb-3 text-right">Réalisé</th>
+                            <th class="pb-3 text-right">Reste</th>
+                            <th class="pb-3 text-center">Avancement</th>
+                            <th class="pb-3">Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for budget in budgets %}
+                        <tr class="border-b border-gray-800">
+                            <td class="py-4 font-bold">{{ budget.get_categorie_display }}</td>
+                            <td class="py-4">
+                                {% if budget.mois %}{{ budget.get_mois_display }}{% else %}Annuel{% endif %} {{ budget.annee }}
+                            </td>
+                            <td class="py-4 text-right text-blue-400 font-bold">{{ budget.montant_prevu }} CFA</td>
+                            <td class="py-4 text-right text-green-400 font-bold">{{ budget.montant_realise }} CFA</td>
+                            <td class="py-4 text-right {% if budget.reste_budget >= 0 %}text-gold{% else %}text-red-400{% endif %} font-bold">
+                                {{ budget.reste_budget }} CFA
+                            </td>
+                            <td class="py-4">
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="h-2 rounded-full {% if budget.taux_execution > 100 %}bg-red-500{% elif budget.taux_execution > 80 %}bg-gold{% else %}bg-green-500{% endif %}" style="width: {{ budget.taux_execution|min:100 }}%"></div>
+                                </div>
+                                <p class="text-xs text-gray-400 text-center mt-1">{{ budget.taux_execution|floatformat:1 }}%</p>
+                            </td>
+                            <td class="py-4">
+                                <span class="px-2 py-1 rounded-full text-xs {% if budget.statut == 'TERMINER' %}bg-green-900/50 text-green-400{% elif budget.statut == 'EN_COURS' %}bg-blue-900/50 text-blue-400{% else %}bg-gray-700 text-gray-400{% endif %}">
+                                    {{ budget.get_statut_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="py-8 text-center text-gray-500">
+                                Aucun budget pour cette année. <a href="{% url 'tresor_finance' %}" class="text-gold hover:underline">Créer un budget</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

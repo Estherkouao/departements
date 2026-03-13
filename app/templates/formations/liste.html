@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Formations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'gold-darker': '#B8860B',
+                        'soft-white': '#F5F5F5',
+                        'card-bg': '#262626',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f0fdfa; color: #1A1A1A; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0, 108, 103, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen">
+    {% include 'partials/sidebar_admin.html' %}
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+<h1 class="text-3xl font-display font-black">Liste des <span class="text-[#006C67]">Formations</span></h1>
+                    <p class="text-gray-600">Gestion et validation des formations</p>
+                </div>
+<button onclick="openModal('formationModal')" class="px-6 py-3 bg-[#006C67] hover:bg-[#00554F] text-white font-bold rounded-xl transition-all">
+                    + Nouvelle Formation
+                </button>
+            </div>
+        </header>
+        
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="glass-card p-4 rounded-lg mb-2 {% if message.tags == 'success' %}border-l-4 border-green-500{% elif message.tags == 'error' %}border-l-4 border-red-500{% else %}border-l-4 border-yellow-500{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for formation in formations %}
+<div class="glass-card rounded-2xl p-6 hover:border-[#006C67]/30 transition-all">
+                {% if formation.image %}
+                <div class="mb-4">
+                    <img src="{{ formation.image.url }}" alt="{{ formation.titre }}" class="w-full h-40 object-cover rounded-lg">
+                </div>
+                {% endif %}
+                
+                <div class="flex justify-between items-start mb-3">
+<h3 class="text-xl font-bold text-gray-900">{{ formation.titre }}</h3>
+                    <span class="px-2 py-1 rounded-full text-xs {% if formation.statut_validation == 'VALIDEE' %}bg-green-500/20 text-green-400{% elif formation.statut_validation == 'REJETEE' %}bg-red-500/20 text-red-400{% else %}bg-yellow-500/20 text-yellow-400{% endif %}">
+                        {{ formation.get_statut_validation_display }}
+                    </span>
+                </div>
+<p class="text-gray-600 text-sm mb-4">{{ formation.description|truncatewords:20 }}</p>
+                
+                <div class="flex gap-2 mb-3">
+                    {% if formation.video %}
+                    <a href="{{ formation.video.url }}" target="_blank" class="text-xs px-3 py-1 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors">
+                        📹 Vidéo
+                    </a>
+                    {% endif %}
+                    {% if formation.supports %}
+                    <a href="{{ formation.supports.url }}" target="_blank" class="text-xs px-3 py-1 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
+                        📄 PDF
+                    </a>
+                    {% endif %}
+                    {% if formation.lien_online %}
+                    <a href="{{ formation.lien_online }}" target="_blank" class="text-xs px-3 py-1 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-colors">
+                        🌐 Lien
+                    </a>
+                    {% endif %}
+                </div>
+                
+<div class="text-gray-700 mb-3 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>{{ formation.date_debut|date:"d/m/Y" }} - {{ formation.date_fin|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span>{{ formation.lieu|default:"Non défini" }}</span>
+                    </div>
+                    {% if formation.departement %}
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+<span class="text-[#006C67]">{{ formation.departement }}</span>
+                    </div>
+                    {% else %}
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+<span class="text-[#006C67]">Tous les départements</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="flex gap-2 mt-4 pt-4 border-t border-gray-700">
+                    <a href="{% url 'modifier_formation' formation.id %}" onclick="event.preventDefault(); openEditModal({{ formation.id }}, '{{ formation.titre|escapejs }}', '{{ formation.description|escapejs }}', '{{ formation.date_debut|date:"Y-m-d" }}', '{{ formation.date_fin|date:"Y-m-d" }}', '{{ formation.lieu|escapejs }}', '{{ formation.departement }}', {{ formation.est_en_ligne|yesno:"true,false" }}, '{{ formation.lien_online|escapejs }}');" class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold text-center transition-colors">
+                        ✏️ Modifier
+                    </a>
+                    <a href="{% url 'supprimer_formation' formation.id %}" onclick="return confirm('Voulez-vous vraiment supprimer cette formation ?');" class="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold text-center transition-colors">
+                        🗑️ Supprimer
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full glass-card p-12 rounded-2xl text-center">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+<p class="text-gray-600 text-lg font-semibold">Aucune formation programmée</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- FORMATION MODAL -->
+    <div id="formationModal" class="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+<div class="glass-card w-full max-w-2xl p-8 rounded-2xl border-2 border-[#006C67]/30 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-display font-bold text-[#006C67]">Nouvelle Formation</h3>
+                <button onclick="closeModal('formationModal')" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form action="{% url 'ajout_formation' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div>
+<label class="block text-sm font-semibold text-gray-200 mb-2">Titre</label>
+<input type="text" name="titre" placeholder="Titre de la formation" class="w-full p-3 rounded-lg bg-card-bg border-2 border-gray-700 text-white text-sm focus:border-[#006C67] focus:outline-none" required>
+                </div>
+                <div>
+<label class="block text-sm font-semibold text-gray-200 mb-2">Description</label>
+                    <textarea name="description" rows="3" class="w-full p-3 rounded-lg bg-card-bg border-2 border-gray-700 text-white text-sm focus:border-[#006C67] focus:outline-none" placeholder="Description de la formation..." required></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-200 mb-2">Département destinataire</label>
+                    <select name="departement_destinataire" class="w-full p-3 rounded-lg bg-card-bg border-2 border-gray-700 text-white text-sm focus:border-[#006C67] focus:outline-none">
+                        <option value="">Tous les départements</option>
+                        <option value="ADA">ADA</option>
+                        <option value="ADN">ADN</option>
+                        <option value="CLASSE_BATEME">Classe de Batême</option>
+                        <option value="COMMUNICATION">Communication</option>
+                        <option value="ECODIM">ECODIM</option>
+                        <option value="EVANGELISATION">Evangelisation</option>
+                        <option value="GESTION_CULTE">Gestion de Culte</option>
+                        <option value="LOGISTIQUE">Logistique</option>
+                        <option value="MUSIQUE_LOUANGE">Musique et Louange</option>
+                        <option value="PORTIER">Portier</option>
+                        <option value="SAINTE_CENE">Sainte Cène</option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-200 mb-2">Date début</label>
+                        <input type="date" name="date_debut" class="w-full p-3 rounded-lg bg-card-bg border-2 border-gray-700 text-white text-sm focus:border-[#006C67] focus:outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-200 mb-2">Date fin</label>
+                        <input type="date" name="date_fin" class="w-full p-3 rounded-lg bg-card-bg border-2 border-gray-700 text-white text-sm focus:border-[#006C67] focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-200 mb-2">Lieu</label>
+                    <input type="text" name="lieu" placeholder="Lieu de la formation" class="w-full p-3 rounded-lg bg-card-bg border-2 border-gray-700 text-white text-sm focus:border-[#006C67] focus:outline-none">
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" name="est_en_ligne" id="est_en_ligne" class="w-4 h-4">
+                    <label for="est_en_ligne" class="text-sm text-gray-200">Formation en ligne</label>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-200 mb-2">Lien en ligne</label>
+                    <input type="url" name="lien_online" placeholder="https://..." class="w-full p-3 rounded-lg bg-card-bg border-2 border-gray-700 text-white text-sm focus:border-[#006C67] focus:outline-none">
+                </div>
+                
+                <div class="border-t-2 border-gray-700 pt-4">
+                    <h4 class="text-sm font-bold text-[#006C67] mb-3">📎 Supports de formation</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-200 mb-2">📹 Vidéo</label>
+                            <input type="file" name="video" accept="video/*" class="w-full p-2 text-sm text-white bg-card-bg border-2 border-gray-700 rounded-lg focus:border-[#006C67] focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-200 mb-2">🖼️ Image/Affiche</label>
+                            <input type="file" name="image" accept="image/*" class="w-full p-2 text-sm text-white bg-card-bg border-2 border-gray-700 rounded-lg focus:border-[#006C67] focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-200 mb-2">📄 Document PDF</label>
+                            <input type="file" name="supports" accept=".pdf,.doc,.docx" class="w-full p-2 text-sm text-white bg-card-bg border-2 border-gray-700 rounded-lg focus:border-[#006C67] focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+                
+<button type="submit" class="w-full py-3 bg-[#006C67] hover:bg-[#00554F] text-white font-bold rounded-lg text-sm transition-all">
+                    CRÉER LA FORMATION
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+        
+        function openEditModal(id, titre, description, dateDebut, dateFin, lieu, departement, estEnLigne, lienOnline) {
+            // Remplir le formulaire avec les données existantes
+            const form = document.querySelector('#formationModal form');
+            form.action = '/formations/' + id + '/modifier/';
+            form.querySelector('[name="titre"]').value = titre;
+            form.querySelector('[name="description"]').value = description;
+            form.querySelector('[name="date_debut"]').value = dateDebut;
+            form.querySelector('[name="date_fin"]').value = dateFin || '';
+            form.querySelector('[name="lieu"]').value = lieu || '';
+            form.querySelector('[name="departement_destinataire"]').value = departement || '';
+            form.querySelector('[name="est_en_ligne"]').checked = estEnLigne;
+            form.querySelector('[name="lien_online"]').value = lienOnline || '';
+            document.querySelector('#formationModal h3').textContent = 'Modifier la Formation';
+            document.querySelector('#formationModal button[type="submit"]').textContent = 'MODIFIER LA FORMATION';
+            openModal('formationModal');
+        }
+    </script>
+</body>
+</html>

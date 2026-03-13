@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <div class="text-center mb-16">
+        <p class="text-violet-spiritual font-semibold tracking-[0.3em] uppercase mb-4">Bienvenue</p>
+        <h2 class="text-4xl sm:text-6xl font-display font-black mb-6 leading-tight">
+            SERVIR AVEC <span class="text-gold">EXCELLENCE</span> ET SPIRITUALITÉ
+        </h2>
+        <div class="max-w-2xl mx-auto">
+            <p class="font-verse italic text-xl text-gray-400 border-l-4 border-gold pl-6 py-2">
+                "Tout ce que vous faites, faites-le de bon cœur, comme pour le Seigneur et non pour des hommes."
+            </p>
+        </div>
+    </div>
+
+    <!-- Stats Cards with Real Data -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+        <div class="glass-card p-4 rounded-2xl flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            </div>
+            <p class="text-2xl font-black text-gold">{{ total_membres|default:"0" }}</p>
+            <p class="text-gray-400 text-xs">Total Membres</p>
+        </div>
+        <div class="glass-card p-4 rounded-2xl flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <p class="text-2xl font-black text-green-500">{{ membres_actifs|default:"0" }}</p>
+            <p class="text-gray-400 text-xs">Membres Actifs</p>
+        </div>
+        <div class="glass-card p-4 rounded-2xl flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full bg-violet-spiritual/10 flex items-center justify-center mb-3">
+                <svg class="w-6 h-6 text-violet-spiritual" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            </div>
+            <p class="text-2xl font-black text-violet-spiritual">{{ sentinelles|default:"0" }}</p>
+            <p class="text-gray-400 text-xs">Sentinelles</p>
+        </div>
+    </div>
+
+    <!-- Quick Access Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <!-- Rapports & Discipline -->
+        <a href="{% url 'gestion' %}" class="glass-card p-6 rounded-2xl flex flex-col items-center text-center hover:border-gold/50 transition-all group">
+            <div class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mb-4 group-hover:bg-gold/20 transition-colors">
+                <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-white mb-2">Rapports & Discipline</h3>
+            <p class="text-gray-400 text-sm">Présences, prières et santé spirituelle</p>
+        </a>
+        
+        <!-- Communion -->
+        <a href="{% url 'communion' %}" class="glass-card p-6 rounded-2xl flex flex-col items-center text-center hover:border-gold/50 transition-all group">
+            <div class="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mb-4 group-hover:bg-gold/20 transition-colors">
+                <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+            </div>
+            <h3 class="font-display font-bold text-lg text-white mb-2">Communion</h3>
+            <p class="text-gray-400 text-sm">Stagiaires, événements et intégration</p>
+        </a>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+        <!-- Left Column: Commissions -->
+        <div class="lg:col-span-2">
+            <!-- Commissions -->
+            <div class="glass-card p-6 rounded-2xl mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-display font-bold text-gold">COMMISSIONS</h3>
+                    <button onclick="openModal('commissionModal')" class="px-3 py-1 border border-gold/30 text-gold text-xs font-bold rounded hover:bg-gold/10">
+                        + Gérer
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for commission in commissions %}
+                    <div class="p-4 bg-white/5 rounded-xl border-l-4 border-gold">
+                        <h4 class="font-bold text-sm text-white mb-2">{{ commission.get_nom_display }}</h4>
+                        {% if commission.responsable %}
+                        <p class="text-xs text-gray-400">Resp: <span class="text-gold">{{ commission.responsable.prenom }} {{ commission.responsable.nom }}</span></p>
+                        {% else %}
+                        <p class="text-xs text-red-400">Aucun responsable</p>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="col-span-full text-center py-4">
+                        <p class="text-gray-500">Aucune commission configurée</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Stagiaires & Evénements Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Stagiaires -->
+                <div class="glass-card p-5 rounded-2xl">
+                    <h3 class="text-lg font-bold text-white mb-4">Stagiaires en cours</h3>
+                    {% for stagaire in stagaires|slice:":3" %}
+                    <div class="flex items-center gap-3 p-2 bg-white/5 rounded-lg mb-2">
+                        <div class="w-8 h-8 rounded-full bg-violet-spiritual/20 flex items-center justify-center text-violet-spiritual font-bold text-xs">
+                            {{ stagaire.prenom.0 }}{{ stagaire.nom.0 }}
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs font-bold">{{ stagaire.prenom }} {{ stagaire.nom }}</p>
+                            <p class="text-[10px] text-gray-500">{{ stagaire.departement_accueil }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray-500 text-sm text-center py-3">Aucun stagiaire</p>
+                    {% endfor %}
+                </div>
+                
+                <!-- Evénements à venir -->
+                <div class="glass-card p-5 rounded-2xl">
+                    <h3 class="text-lg font-bold text-white mb-4">Événements à venir</h3>
+                    {% for evenement in evenements_a_venir|slice:":3" %}
+                    <div class="flex items-center gap-3 p-2 bg-white/5 rounded-lg mb-2">
+                        <div class="p-2 bg-gold/10 rounded-lg text-gold font-bold text-xs text-center min-w-[40px]">
+                            <span class="block">{{ evenement.date_evenement|date:"d" }}</span>
+                            <span class="block text-[8px] uppercase">{{ evenement.date_evenement|date:"M" }}</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs font-bold">{{ evenement.titre }}</p>
+                            <p class="text-[10px] text-gray-500">{{ evenement.get_type_evenement_display }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray-500 text-sm text-center py-3">Aucun événement</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column: Actualités & Formations -->
+        <div class="space-y-6">
+            <!-- Dernières actualités -->
+            <div class="glass-card p-5 rounded-2xl">
+                <h3 class="text-lg font-bold text-gold mb-4">Actualités</h3>
+                {% for actualite in dernieres_actualites|slice:":4" %}
+                <div class="border-b border-gray-700 pb-3 mb-3 last:border-0">
+                    <p class="text-xs font-bold text-white mb-1">{{ actualite.titre }}</p>
+                    <p class="text-[10px] text-gray-500">{{ actualite.date_publication|date:"d M Y" }} • {{ actualite.get_categorie_display }}</p>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-sm text-center py-3">Aucune actualité</p>
+                {% endfor %}
+                {% if dernieres_actualites %}
+                <a href="{% url 'communication' %}" class="text-xs text-gold hover:underline">Voir toutes les actualités →</a>
+                {% endif %}
+            </div>
+            
+            <!-- Formations -->
+            <div class="glass-card p-5 rounded-2xl">
+                <h3 class="text-lg font-bold text-violet-spiritual mb-4">Formations</h3>
+                {% for formation in formations|slice:":3" %}
+                <div class="p-3 bg-white/5 rounded-lg mb-3">
+                    <p class="text-xs font-bold text-white mb-1">{{ formation.titre }}</p>
+                    <p class="text-[10px] text-gray-500">{{ formation.date_debut|date:"d M" }} - {{ formation.get_statut_display }}</p>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-sm text-center py-3">Aucune formation</p>
+                {% endfor %}
+                {% if formations %}
+                <a href="{% url 'formation' %}" class="text-xs text-violet-spiritual hover:underline">Voir toutes les formations →</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- COMMISSION MODAL -->
+<div id="commissionModal" class="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-2xl p-8 rounded-3xl border-2 border-gold/30 animate-slide-up max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-display font-black text-gold">GESTION DES COMMISSIONS</h3>
+            <button onclick="closeModal('commissionModal')" class="text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <form action="{% url 'ajout_commission' %}" method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs text-gold font-bold uppercase mb-2">Sélectionner la commission</label>
+                <select name="nom" class="w-full p-3 rounded-lg custom-input text-sm" required>
+                    <option value="">-- Choisir une commission --</option>
+                    <option value="GESTION_RAPPORTS">Gestion des Rapports</option>
+                    <option value="COMMUNION_INTEGRATION">Communion Fraternelle + Intégration</option>
+                    <option value="FORMATION_TECHNIQUE">Formation Technique</option>
+                    <option value="DISCIPLINE_SANTE">Discipline et Santé Spirituelle</option>
+                    <option value="TRESOR_FINANCE">Trésor, Finance et Gestion des Ressources</option>
+                    <option value="COMMUNICATION">Communication</option>
+                    <option value="GESTION_SERVICE">Gestion de Service (Rotation)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-gold font-bold uppercase mb-2">Responsable</label>
+                <select name="responsable" class="w-full p-3 rounded-lg custom-input text-sm">
+                    <option value="">-- Sélectionner le responsable --</option>
+                    {% for membre in membres %}
+                    <option value="{{ membre.id }}">{{ membre.prenom }} {{ membre.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-gold font-bold uppercase mb-2">Description (optionnelle)</label>
+                <textarea name="description" rows="2" class="w-full p-3 rounded-lg custom-input text-sm" placeholder="Description de la commission..."></textarea>
+            </div>
+            <button type="submit" class="w-full py-3 gold-gradient text-deep-black font-bold rounded-lg text-sm hover:shadow-[0_0_20px_rgba(255,215,0,0.4)]">
+                ENREGISTRER
+            </button>
+        </form>
+        
+        <!-- Liste des commissions actuelles -->
+        <div class="mt-8 pt-6 border-t border-gray-700">
+            <h4 class="font-bold text-white mb-4">Commissions configurées</h4>
+            <div class="space-y-3 max-h-60 overflow-y-auto">
+                {% for commission in commissions %}
+                <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                    <div>
+                        <p class="font-bold text-sm text-gold">{{ commission.get_nom_display }}</p>
+                        <p class="text-xs text-gray-400">
+                            {% if commission.responsable %}
+                            Resp: {{ commission.responsable.prenom }} {{ commission.responsable.nom }}
+                            {% else %}
+                            Pas de responsable
+                            {% endif %}
+                        </p>
+                    </div>
+                    <span class="text-xs text-gray-500">{{ commission.membres.count }} membres</span>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-sm text-center py-4">Aucune commission configurée</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

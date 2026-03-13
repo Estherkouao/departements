@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Commissions - </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepblack: '#1A1A1A',
+                        gold: '#FFD700',
+                        violetspiritual: '#8A2BE2',
+                        cardbg: '#262626',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #1A1A1A; color: #FFFFFF; }
+        .glasscard { background: rgba(38, 38, 38, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 215, 0, 0.1); }
+    </style>
+</head>
+<body class="fontsans">
+    <header class="fixed top0 wfull z50 glasscard border-b border-gold20 px6 py4">
+        <div class="max-w7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap3">
+                <div class="w10 h10 bg-gradient-to-br from-yellow-400 to-yellow-700 rounded-full flex items-center justify-center text-deepblack font-bold text-xl">Département</div>
+                <h1 class="fontdisplay font-extrabold text-xl text-white">ORGANISATION <span class="text-gold">DES DEPARTEMENTS</span></h1>
+            </div>
+            <a href="{% url 'departement' %}" class="px4 py2 border border-gold text-gold rounded-lg text-sm font-bold hover:bg-gold hover:text-deepblack">Retour</a>
+        </div>
+    </header>
+
+    <main class="pt28 pb12 px4 max-w7xl mx-auto">
+        <div class="flex justify-between items-center mb8">
+            <h2 class="text3xl fontdisplay font-bold text-gold">COMMISSIONS</h2>
+            <a href="#" class="px4 py2 bg-gold text-deepblack rounded-lg font-bold text-sm">+ Nouvelle commission</a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap6">
+            {% for commission in commissions %}
+            <div class="glasscard rounded-2xl p6 border-l-4 border-gold">
+                <h3 class="text-xl font-bold mb2">{{ commission.get_nom_display }}</h3>
+                <p class="text-gray-400 text-sm mb4">{{ commission.description|truncatewords:20 }}</p>
+                <div class="pt4 border-t border-gray-700">
+                    {% if commission.responsable %}
+                    <p class="text-xs text-gold">Responsable: {{ commission.responsable.prenom }} {{ commission.responsable.nom }}</p>
+                    {% else %}
+                    <p class="text-xs text-red-400">Aucun responsable</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt2">{{ commission.membres.count }} membres</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full glasscard p8 rounded-2xl text-center">
+                <p class="text-gray-400">Aucune commission configurée.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
+

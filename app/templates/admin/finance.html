@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finances </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f0fdfa; color: #1A1A1A; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0, 108, 103, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar Admin -->
+    {% include 'partials/sidebar_admin.html' %}
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-display font-black">Gestion des <span class="text-[#006C67]">Finances</span></h1>
+                <p class="text-gray-500">Bienvenue, <span class="text-gray-800 font-semibold">{{ user.username }}</span></p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'liste_notifications' %}" class="relative p-3 glass-card rounded-xl hover:border-[#006C67] transition-colors">
+                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                </a>
+                <div class="flex items-center gap-3 glass-card px-4 py-2 rounded-xl">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background: linear-gradient(135deg, #006C67 0%, #00554F 100%);">
+                        {{ user.username|make_list|first|upper }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">{{ user.username }}</p>
+                        <p class="text-xs text-gray-500">Administrateur</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-[#006C67]">
+                <p class="text-gray-500 text-xs uppercase">Total Entrées</p>
+                <p class="text-3xl font-black text-[#006C67] mt-2">{{ total_entrees|default:"0" }} <span class="text-lg">CFA</span></p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-[#B21E28]">
+                <p class="text-gray-500 text-xs uppercase">Total Dépenses</p>
+                <p class="text-3xl font-black text-[#B21E28] mt-2">{{ total_sorties|default:"0" }} <span class="text-lg">CFA</span></p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-[#006C67]">
+                <p class="text-gray-500 text-xs uppercase">Solde Net</p>
+                <p class="text-3xl font-black text-[#006C67] mt-2">{{ solde|default:"0" }} <span class="text-lg">CFA</span></p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-[#006C67]">
+                <p class="text-gray-500 text-xs uppercase">Mouvements</p>
+                <p class="text-3xl font-black text-[#006C67] mt-2">{{ transactions_recents|length }}</p>
+            </div>
+        </div>
+        
+        <!-- Soldes par Département -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h3 class="font-bold text-lg mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-[#006C67]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                Soldes par Département
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for dept in soldes_departements %}
+                <div class="p-4 bg-[#006C67]/5 rounded-xl hover:bg-[#006C67]/10 transition-all cursor-pointer" onclick="filterByDepartment('{{ dept.code }}')">
+                    <p class="text-xs text-gray-500 uppercase mb-2">{{ dept.nom }}</p>
+                    <p class="text-2xl font-bold {% if dept.solde >= 0 %}text-[#006C67]{% else %}text-[#B21E28]{% endif %}">{{ dept.solde }} CFA</p>
+                    <div class="flex justify-between text-xs mt-2">
+                        <span class="text-[#006C67]">+{{ dept.entrees }}</span>
+                        <span class="text-[#B21E28]">-{{ dept.sorties }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Transactions and Form -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Transactions List -->
+            <div class="lg:col-span-2 glass-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <svg class="w-5 h-5 text-[#006C67]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        Historique des Transactions
+                    </h3>
+                    <select id="departmentFilter" class="p-2 rounded-lg bg-white border border-[#006C67]/30 text-gray-800 text-xs" onchange="filterTransactions()">
+                        <option value="">Tous les départements</option>
+                        {% for dept in departements_list %}
+                        <option value="{{ dept.0 }}">{{ dept.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="transactionsList" class="space-y-4">
+                    {% for transaction in transactions_recents %}
+                    <div class="transaction-item flex items-center justify-between p-4 bg-[#006C67]/5 rounded-xl" data-department="{{ transaction.departement }}">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full {% if transaction.type_mouvement == 'ENTREE' %}bg-[#006C67]/20{% else %}bg-[#B21E28]/20{% endif %} flex items-center justify-center {% if transaction.type_mouvement == 'ENTREE' %}text-[#006C67]{% else %}text-[#B21E28]{% endif %} font-bold text-xs">
+                                {% if transaction.type_mouvement == 'ENTREE' %}IN{% else %}OUT{% endif %}
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">{{ transaction.description }}</p>
+                                <p class="text-[10px] text-gray-500 uppercase">{{ transaction.date_transaction }} • {{ transaction.get_categorie_display|default:transaction.categorie }}
+                                {% if transaction.departement %}
+                                <span class="ml-2 px-2 py-0.5 bg-[#006C67]/20 text-[#006C67] rounded text-[9px]">
+                                    {% for dept in departements_list %}
+                                        {% if dept.0 == transaction.departement %}{{ dept.1 }}{% endif %}
+                                    {% endfor %}
+                                </span>
+                                {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="font-mono {% if transaction.type_mouvement == 'ENTREE' %}text-[#006C67]{% else %}text-[#B21E28]{% endif %} font-bold">
+                            {% if transaction.type_mouvement == 'ENTREE' %}+{% else %}-{% endif %}{{ transaction.montant }} CFA
+                        </span>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-8 text-gray-500">
+                        <p>Aucune transaction enregistrée</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- New Transaction Form -->
+            <div class="glass-card p-6 rounded-2xl">
+                <h3 class="font-display font-bold text-xl mb-4 text-[#006C67]">Nouveau Mouvement</h3>
+                <p class="text-sm text-gray-500 mb-6">Enregistrez un revenu ou une dépense départementale.</p>
+                <form action="{% url 'ajout_transaction' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="space-y-3">
+                        <select name="departement" class="w-full p-3 rounded-lg bg-white border border-[#006C67]/30 text-gray-800 text-sm" required>
+                            <option value="">Sélectionner un département</option>
+                            {% for dept in departements_list %}
+                            <option value="{{ dept.0 }}">{{ dept.1 }}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="type_transaction" class="w-full p-3 rounded-lg bg-white border border-[#006C67]/30 text-gray-800 text-sm" required>
+                            <option value="">Type de transaction</option>
+                            <option value="COTISATION">Cotisation</option>
+                            <option value="COLLECTE">Collecte</option>
+                            <option value="DON">Don</option>
+                            <option value="DEPENSE">Dépense</option>
+                            <option value="ACHAT">Achat</option>
+                            <option value="SOUTIEN">Soutien social</option>
+                        </select>
+                        <select name="type_mouvement" class="w-full p-3 rounded-lg bg-white border border-[#006C67]/30 text-gray-800 text-sm" required>
+                            <option value="">Type de mouvement</option>
+                            <option value="ENTREE">Entrée</option>
+                            <option value="SORTIE">Sortie</option>
+                        </select>
+                        <input type="number" name="montant" placeholder="Montant (CFA)" class="w-full p-3 rounded-lg bg-white border border-[#006C67]/30 text-gray-800 text-sm" required>
+                        <input type="text" name="description" placeholder="Libellé / Justification" class="w-full p-3 rounded-lg bg-white border border-[#006C67]/30 text-gray-800 text-sm" required>
+                        <select name="categorie" class="w-full p-3 rounded-lg bg-white border border-[#006C67]/30 text-gray-800 text-sm">
+                            <option value="AUTRE">Catégorie</option>
+                            <option value="LOGISTIQUE">Logistique</option>
+                            <option value="EQUIPEMENT">Équipement</option>
+                            <option value="FORMATION">Formation</option>
+                            <option value="COMMUNICATION">Communication</option>
+                            <option value="SOCIAL">Action sociale</option>
+                            <option value="CULTUREL">Activité culturelle</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full mt-6 py-4 bg-[#006C67] text-white font-bold rounded-xl hover:bg-[#00554F] transition-colors">SOUMETTRE</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        function filterTransactions() {
+            const selectedDept = document.getElementById('departmentFilter').value;
+            const transactions = document.querySelectorAll('.transaction-item');
+            
+            transactions.forEach(transaction => {
+                const deptValue = transaction.getAttribute('data-department');
+                if (selectedDept === '' || deptValue === selectedDept) {
+                    transaction.style.display = 'flex';
+                } else {
+                    transaction.style.display = 'none';
+                }
+            });
+        }
+        
+        function filterByDepartment(deptCode) {
+            const filterSelect = document.getElementById('departmentFilter');
+            filterSelect.value = deptCode;
+            filterTransactions();
+            
+            // Scroll to transactions list
+            document.getElementById('transactionsList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>
+

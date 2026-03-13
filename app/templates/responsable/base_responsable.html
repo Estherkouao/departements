@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard Responsable{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'depart-green': '#006C67',
+                        'depart-green-dark': '#004D47',
+                        'depart-red': '#B21E28',
+                        'depart-red-dark': '#8B1820',
+                        'depart-gold': '#D2AF1F',
+                        'depart-gold-light': '#E5C84B',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F0 50%, #EBEBE0 100%);
+            color: #1A1A1A;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(0, 108, 103, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 108, 103, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 108, 103, 0.3);
+        }
+        .green-gradient {
+            background: linear-gradient(135deg, #006C67 0%, #004D47 100%);
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #D2AF1F 0%, #B8961C 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar pour Responsable de Département -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-white border-r-4 border-depart-green z-40 shadow-2xl">
+        <div class="p-6 border-b-2 border-depart-green/30">
+            <!-- Logo -->
+            <div class="mb-4">
+                <img src="/media/Logo-VH-A.G.E.png" alt="Logo VH A.G.E" class="w-32 h-auto mx-auto object-contain">
+            </div>
+            <h2 class="font-display font-bold text-xl text-depart-green text-center">{{ nom_departement|default:"Département" }}</h2>
+            <p class="text-gray-600 text-xs mt-1 text-center">Gestion du département</p>
+        </div>
+        
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="{% url 'dashboard_responsable' %}" class="group flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'dashboard_responsable' %}bg-depart-green text-white border-l-4 border-depart-gold{% else %}text-gray-700 hover:bg-depart-green/10 hover:text-depart-green hover:border-l-4 hover:border-depart-green{% endif %} rounded-xl transition-all duration-300">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                <span class="font-semibold">Tableau de bord</span>
+            </a>
+
+            <a href="{% url 'gestion' %}" class="group flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'gestion' %}bg-depart-green text-white border-l-4 border-depart-gold{% else %}text-gray-700 hover:bg-depart-green/10 hover:text-depart-green hover:border-l-4 hover:border-depart-green{% endif %} rounded-xl transition-all duration-300">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="font-semibold">Rapports</span>
+            </a>
+            
+            <a href="{% url 'communion' %}" class="group flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'communion' %}bg-depart-green text-white border-l-4 border-depart-gold{% else %}text-gray-700 hover:bg-depart-green/10 hover:text-depart-green hover:border-l-4 hover:border-depart-green{% endif %} rounded-xl transition-all duration-300">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="font-semibold">Communion</span>
+            </a>
+            
+            <a href="{% url 'formation' %}" class="group flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'formation' %}bg-depart-green text-white border-l-4 border-depart-gold{% else %}text-gray-700 hover:bg-depart-green/10 hover:text-depart-green hover:border-l-4 hover:border-depart-green{% endif %} rounded-xl transition-all duration-300">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <span class="font-semibold">Formation</span>
+            </a>
+            
+            <a href="{% url 'rapport_incident' %}" class="group flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'rapport_incident' %}bg-depart-green text-white border-l-4 border-depart-gold{% else %}text-gray-700 hover:bg-depart-green/10 hover:text-depart-green hover:border-l-4 hover:border-depart-green{% endif %} rounded-xl transition-all duration-300">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                <span class="font-semibold">Discipline</span>
+            </a>
+            
+            <a href="{% url 'communication' %}" class="group flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'communication' %}bg-depart-green text-white border-l-4 border-depart-gold{% else %}text-gray-700 hover:bg-depart-green/10 hover:text-depart-green hover:border-l-4 hover:border-depart-green{% endif %} rounded-xl transition-all duration-300">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <span class="font-semibold">Communication</span>
+            </a>
+            
+            <a href="{% url 'finance_departement' %}" class="group flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'finance_departement' %}bg-depart-gold text-white border-l-4 border-depart-green{% else %}text-gray-700 hover:bg-depart-gold/10 hover:text-depart-gold-dark hover:border-l-4 hover:border-depart-gold{% endif %} rounded-xl transition-all duration-300">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="font-semibold">Finances</span>
+            </a>
+            
+            <a href="{% url 'gestion_services' %}" class="group flex items-center gap-3 px-4 py-3 {% if request.resolver_match.url_name == 'gestion_services' %}bg-depart-green text-white border-l-4 border-depart-gold{% else %}text-gray-700 hover:bg-depart-green/10 hover:text-depart-green hover:border-l-4 hover:border-depart-green{% endif %} rounded-xl transition-all duration-300">
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <span class="font-semibold">Services</span>
+            </a>
+            
+            <a href="{% url 'deconnexion' %}" class="flex items-center gap-3 px-4 py-3 text-depart-red hover:bg-depart-red/10 hover:text-depart-red-dark rounded-xl transition-all duration-300 mt-8 border-t-2 border-gray-300 pt-6">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span class="font-semibold">Déconnexion</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="ml-64 p-8">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

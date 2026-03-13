@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Modifier Rapport{% endblock %}
+
+{% block extra_css %}
+<style>
+    .custom-input {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: #1f2937;
+    }
+    .custom-input:focus {
+        border-color: #0000FF;
+        outline: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-6 gap-4">
+        <div>
+            <h1 class="text-4xl font-display font-bold text-pure-blue mb-2">Modifier le <span class="text-pure-green">Rapport</span></h1>
+            <p class="text-gray-600 uppercase tracking-widest text-xs">Rapport du {{ rapport.date_culte|date:"d/m/Y" }}</p>
+        </div>
+        <a href="{% url 'liste_rapports_culte' %}" class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-bold text-sm hover:bg-gray-100 transition-all">
+            Annuler
+        </a>
+    </div>
+
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- 1. Présence des serviteurs -->
+        <div class="glass-card p-6 rounded-xl border-l-4 border-pure-green">
+            <h3 class="font-bold text-lg text-pure-green-dark mb-4">1. Présence des serviteurs</h3>
+            
+            <!-- Prière 1er culte -->
+            <div class="mb-4">
+                <h4 class="text-sm font-bold text-gray-700 mb-2">Prière avant 1er culte</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="number" name="priere_1_nbre" value="{{ rapport.priere_1_nbre }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Nombre">
+                    <input type="number" name="priere_1_programme" value="{{ rapport.priere_1_programme }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Programmé">
+                    <input type="number" name="priere_1_absent" value="{{ rapport.priere_1_absent }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Absent">
+                    <input type="text" name="priere_1_motifs" value="{{ rapport.priere_1_motifs }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Motifs">
+                </div>
+            </div>
+
+            <!-- 1er Culte -->
+            <div class="mb-4">
+                <h4 class="text-sm font-bold text-gray-700 mb-2">1er Culte</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="number" name="culte_1_nbre" value="{{ rapport.culte_1_nbre }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Nombre">
+                    <input type="number" name="culte_1_programme" value="{{ rapport.culte_1_programme }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Programmé">
+                    <input type="number" name="culte_1_absent" value="{{ rapport.culte_1_absent }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Absent">
+                    <input type="text" name="culte_1_motifs" value="{{ rapport.culte_1_motifs }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Motifs">
+                </div>
+            </div>
+
+            <!-- Prière 2ème culte -->
+            <div class="mb-4">
+                <h4 class="text-sm font-bold text-gray-700 mb-2">Prière avant 2ème culte</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="number" name="priere_2_nbre" value="{{ rapport.priere_2_nbre }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Nombre">
+                    <input type="number" name="priere_2_programme" value="{{ rapport.priere_2_programme }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Programmé">
+                    <input type="number" name="priere_2_absent" value="{{ rapport.priere_2_absent }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Absent">
+                    <input type="text" name="priere_2_motifs" value="{{ rapport.priere_2_motifs }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Motifs">
+                </div>
+            </div>
+
+            <!-- 2ème Culte -->
+            <div class="mb-4">
+                <h4 class="text-sm font-bold text-gray-700 mb-2">2ème Culte</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="number" name="culte_2_nbre" value="{{ rapport.culte_2_nbre }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Nombre">
+                    <input type="number" name="culte_2_programme" value="{{ rapport.culte_2_programme }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Programmé">
+                    <input type="number" name="culte_2_absent" value="{{ rapport.culte_2_absent }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Absent">
+                    <input type="text" name="culte_2_motifs" value="{{ rapport.culte_2_motifs }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Motifs">
+                </div>
+            </div>
+
+            <!-- Culte des Boss -->
+            <div class="mb-4">
+                <h4 class="text-sm font-bold text-gray-700 mb-2">Culte des Boss</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="number" name="culte_boss_nbre" value="{{ rapport.culte_boss_nbre }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Nombre">
+                    <input type="number" name="culte_boss_programme" value="{{ rapport.culte_boss_programme }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Programmé">
+                    <input type="number" name="culte_boss_absent" value="{{ rapport.culte_boss_absent }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Absent">
+                    <input type="text" name="culte_boss_motifs" value="{{ rapport.culte_boss_motifs }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Motifs">
+                </div>
+            </div>
+
+            <!-- Réveil Sentinelles -->
+            <div>
+                <h4 class="text-sm font-bold text-gray-700 mb-2">Réveil Sentinelles</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="number" name="reveil_sentinelles_nbre" value="{{ rapport.reveil_sentinelles_nbre }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Nombre">
+                    <input type="number" name="reveil_sentinelles_programme" value="{{ rapport.reveil_sentinelles_programme }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Programmé">
+                    <input type="number" name="reveil_sentinelles_absent" value="{{ rapport.reveil_sentinelles_absent }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Absent">
+                    <input type="text" name="reveil_sentinelles_motifs" value="{{ rapport.reveil_sentinelles_motifs }}" class="px-3 py-2 rounded-lg custom-input text-sm" placeholder="Motifs">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Observations -->
+        <div class="glass-card p-6 rounded-xl border-l-4 border-pure-blue">
+            <h3 class="font-bold text-lg text-pure-blue mb-4">2. Observations générales et recommandations</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Points forts</label>
+                    <textarea name="points_forts" rows="4" class="w-full px-4 py-3 rounded-lg custom-input text-sm">{{ rapport.points_forts }}</textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Difficultés</label>
+                    <textarea name="difficultes" rows="4" class="w-full px-4 py-3 rounded-lg custom-input text-sm">{{ rapport.difficultes }}</textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Recommandations</label>
+                    <textarea name="recommandations" rows="4" class="w-full px-4 py-3 rounded-lg custom-input text-sm">{{ rapport.recommandations }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex gap-4 justify-end">
+            <a href="{% url 'liste_rapports_culte' %}" class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-bold text-sm hover:bg-gray-100 transition-all">
+                Annuler
+            </a>
+            <button type="submit" class="px-8 py-3 blue-gradient text-white font-bold rounded-lg text-sm hover:shadow-lg transition-all">
+                Enregistrer les modifications
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

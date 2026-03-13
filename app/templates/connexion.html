@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-age': '#006C67',
+                        'primary-age-dark': '#00554F',
+                        'accent-age': '#B21E28',
+                        'accent-age-dark': '#8F1820',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f0fdfa;
+            color: #1A1A1A;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 2px solid #006C67;
+            box-shadow: 0 20px 40px -10px rgba(0, 108, 103, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <img src="/media/Logo-VH-A.G.E.png" alt="Logo VH A.G.E" class="w-32 h-32 mx-auto mb-4 object-contain">
+            <h1 class="text-3xl font-display font-black text-[#006C67]">
+                GESTION DES <span class="text-[#B21E28]">DÉPARTEMENTS</span>
+            </h1>
+            <p class="text-gray-500 mt-2">Connectez-vous à votre espace</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="glass-card rounded-3xl p-8">
+            <h2 class="text-2xl font-display font-bold text-center mb-6 text-[#006C67]">Connexion</h2>
+            
+            {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                <div class="p-3 rounded-lg mb-2 {% if message.tags == 'error' %}bg-accent-age text-white border-2 border-accent-age-dark{% else %}bg-green-600 text-white border-2 border-green-700{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <form method="POST" class="space-y-5">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="block text-xs font-bold text-[#006C67] uppercase mb-2">Nom d'utilisateur</label>
+                    <input type="text" name="username" required 
+                        class="w-full p-4 rounded-xl bg-white border-2 border-[#006C67] text-gray-800 focus:border-[#006C67] focus:outline-none transition-colors placeholder-gray-400"
+                        placeholder="Votre nom d'utilisateur">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-[#006C67] uppercase mb-2">Mot de passe</label>
+                    <input type="password" name="password" required 
+                        class="w-full p-4 rounded-xl bg-white border-2 border-[#006C67] text-gray-800 focus:border-[#006C67] focus:outline-none transition-colors placeholder-gray-400"
+                        placeholder="••••••••">
+                </div>
+                
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center text-gray-600">
+                        <input type="checkbox" class="mr-2 rounded border-[#006C67]">
+                        Se souvenir de moi
+                    </label>
+                </div>
+                
+                <button type="submit" 
+                    class="w-full py-4 bg-[#006C67] text-white font-extrabold rounded-xl hover:bg-[#00554F] transition-all transform hover:scale-[1.02]">
+                    SE CONNECTER
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

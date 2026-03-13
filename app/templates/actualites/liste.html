@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Actualités </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'violet-spiritual': '#8A2BE2',
+                        'card-bg': '#262626',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #1A1A1A; color: #FFFFFF; }
+        .glass-card { background: rgba(38, 38, 38, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 215, 0, 0.1); }
+    </style>
+</head>
+<body class="font-sans">
+    <header class="fixed top-0 w-full z-50 glass-card border-b border-gold/20 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-700 rounded-full flex items-center justify-center text-deep-black font-bold text-xl">Département</div>
+                <h1 class="font-display font-extrabold text-xl text-white">ORGANISATION <span class="text-gold">DES DEPARTEMENTS</span></h1>
+            </div>
+            <a href="{% url 'departement' %}" class="px-4 py-2 border border-gold text-gold rounded-lg text-sm font-bold hover:bg-gold hover:text-deep-black">Retour</a>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-12 px-4 max-w-7xl mx-auto">
+        <h2 class="text-3xl font-display font-bold text-gold mb-8">ACTUALITÉS</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for actualite in actualites %}
+            <article class="glass-card rounded-2xl overflow-hidden">
+                <div class="h-40 bg-gradient-to-br from-gold/40 to-violet-spiritual/40"></div>
+                <div class="p-6">
+                    <span class="text-xs font-bold text-gold uppercase">{{ actualite.get_categorie_display }} • {{ actualite.date_publication }}</span>
+                    <h3 class="text-xl font-bold mt-2 mb-3">{{ actualite.titre }}</h3>
+                    <p class="text-gray-400 text-sm">{{ actualite.contenu|truncatewords:30 }}</p>
+                </div>
+            </article>
+            {% empty %}
+            <div class="col-span-full glass-card p-8 rounded-2xl text-center">
+                <p class="text-gray-400">Aucune actualité publiée.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
+

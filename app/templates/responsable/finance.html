@@ -1,0 +1,110 @@
+{% extends 'responsable/base_responsable.html' %}
+
+{% block title %}Finances Département - {{ nom_departement }}{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <header class="mb-8">
+        <h1 class="text-4xl font-display font-bold text-pure-blue mb-2">Finances <span class="text-pure-green">{{ nom_departement }}</span></h1>
+        <p class="text-gray-600">Gestion des ressources financières du département</p>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-4 p-4 rounded-lg glass-card border-l-4 {% if message.tags == 'success' %}border-pure-green{% else %}border-red-500{% endif %}">
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-pure-green hover:shadow-xl transition-all">
+            <p class="text-gray-600 text-xs uppercase font-semibold">Total Entrées</p>
+            <p class="text-4xl font-black text-pure-green-dark mt-2">{{ total_entrees|default:"0" }} <span class="text-lg">CFA</span></p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-red-500 hover:shadow-xl transition-all">
+            <p class="text-gray-600 text-xs uppercase font-semibold">Total Dépenses</p>
+            <p class="text-4xl font-black text-red-600 mt-2">{{ total_sorties|default:"0" }} <span class="text-lg">CFA</span></p>
+        </div>
+        <div class="glass-card p-6 rounded-2xl border-l-4 border-pure-blue hover:shadow-xl transition-all">
+            <p class="text-gray-600 text-xs uppercase font-semibold">Solde Net</p>
+            <p class="text-4xl font-black text-pure-blue mt-2">{{ solde|default:"0" }} <span class="text-lg">CFA</span></p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 glass-card rounded-2xl p-6">
+            <h3 class="font-bold text-xl mb-6 flex items-center gap-2 text-pure-blue">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Historique des Transactions
+            </h3>
+            <div class="space-y-4">
+                {% for transaction in transactions_recents %}
+                <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full {% if transaction.type_mouvement == 'ENTREE' %}bg-green-100{% else %}bg-red-100{% endif %} flex items-center justify-center {% if transaction.type_mouvement == 'ENTREE' %}text-green-700{% else %}text-red-700{% endif %} font-bold text-sm">
+                            {% if transaction.type_mouvement == 'ENTREE' %}IN{% else %}OUT{% endif %}
+                        </div>
+                        <div>
+                            <p class="font-bold text-sm text-gray-800">{{ transaction.description }}</p>
+                            <p class="text-xs text-gray-500 uppercase">{{ transaction.date_transaction }} • {{ transaction.get_categorie_display|default:transaction.categorie }}</p>
+                            {% if transaction.membre %}
+                            <p class="text-xs text-pure-blue font-semibold">{{ transaction.membre.prenom }} {{ transaction.membre.nom }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <span class="font-mono {% if transaction.type_mouvement == 'ENTREE' %}text-green-700{% else %}text-red-700{% endif %} font-bold">
+                        {% if transaction.type_mouvement == 'ENTREE' %}+{% else %}-{% endif %}{{ transaction.montant }} CFA
+                    </span>
+                </div>
+                {% empty %}
+                <div class="text-center py-8 text-gray-500">
+                    <p>Aucune transaction enregistrée pour ce département</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+<!--
+        <div class="glass-card p-6 rounded-2xl border-2 border-pure-blue">
+            <h3 class="font-display font-bold text-xl mb-4 text-pure-blue">Nouveau Mouvement</h3>
+            <p class="text-sm text-gray-600 mb-6">Enregistrez un revenu ou une dépense pour le département.</p>
+            <form action="{% url 'ajout_transaction' %}" method="POST">
+                {% csrf_token %}
+                <div class="space-y-3">
+                    <select name="membre" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-800 text-sm focus:border-pure-blue focus:outline-none" required>
+                        <option value="">Sélectionner un membre (Requis)</option>
+                        {% for membre in membres %}
+                        <option value="{{ membre.id }}">{{ membre.prenom }} {{ membre.nom }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="type_transaction" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-800 text-sm focus:border-pure-blue focus:outline-none" required>
+                        <option value="">Type de transaction</option>
+                        <option value="COTISATION">Cotisation</option>
+                        <option value="COLLECTE">Collecte</option>
+                        <option value="DON">Don</option>
+                        <option value="DEPENSE">Dépense</option>
+                        <option value="ACHAT">Achat</option>
+                        <option value="SOUTIEN">Soutien social</option>
+                    </select>
+                    <select name="type_mouvement" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-800 text-sm focus:border-pure-blue focus:outline-none" required>
+                        <option value="">Type de mouvement</option>
+                        <option value="ENTREE">Entrée</option>
+                        <option value="SORTIE">Sortie</option>
+                    </select>
+                    <input type="number" name="montant" placeholder="Montant (CFA)" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-800 text-sm focus:border-pure-blue focus:outline-none" required>
+                    <input type="text" name="description" placeholder="Libellé / Justification" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-800 text-sm focus:border-pure-blue focus:outline-none" required>
+                    <select name="categorie" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-800 text-sm focus:border-pure-blue focus:outline-none">
+                        <option value="AUTRE">Catégorie</option>
+                        <option value="LOGISTIQUE">Logistique</option>
+                        <option value="EQUIPEMENT">Équipement</option>
+                        <option value="FORMATION">Formation</option>
+                        <option value="COMMUNICATION">Communication</option>
+                        <option value="SOCIAL">Action sociale</option>
+                        <option value="CULTUREL">Activité culturelle</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full mt-6 py-4 green-gradient text-white font-bold rounded-xl hover:shadow-lg transition-all">SOUMETTRE</button>
+            </form>
+        </div> -->
+    </div>
+{% endblock %}

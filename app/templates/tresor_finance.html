@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trésor, Finance et Gestion des Ressources</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'gold-darker': '#B8860B',
+                        'violet-spiritual': '#8A2BE2',
+                        'soft-white': '#F5F5F5',
+                        'card-bg': '#262626',
+                        'green-success': '#10B981',
+                        'red-danger': '#EF4444',
+                        'orange-warning': '#F59E0B',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f0f0f;
+            color: #FFFFFF;
+        }
+        .glass-card {
+            background: rgba(38, 38, 38, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        .gradient-gold {
+            background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-deep-black border-r border-gold/20 z-40">
+        <div class="p-6">
+            <div class="w-12 h-12 gradient-gold rounded-full flex items-center justify-center text-deep-black font-bold text-xl mb-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h2 class="font-display font-bold text-lg">Trésor & Finance</h2>
+            <p class="text-gray-500 text-xs">Commission de gestion</p>
+        </div>
+        
+        <nav class="mt-6 px-4 space-y-2">
+            <a href="{% url 'tresor_finance' %}" class="flex items-center gap-3 px-4 py-3 bg-gold/10 text-gold rounded-xl">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Vue d'ensemble
+            </a>
+            <a href="{% url 'suivre_budget' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                Budget
+            </a>
+            <a href="{% url 'liste_impayes' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Impayés
+            </a>
+            <a href="{% url 'finance' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Transactions
+            </a>
+            <a href="{% url 'dashboard_admin' %}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition-colors mt-8 border-t border-gray-800 pt-6">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                Dashboard Admin
+            </a>
+            <a href="{% url 'deconnexion' %}" class="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-900/20 rounded-xl transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Déconnexion
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-display font-black">Commission <span class="text-gold">Trésor, Finance</span> et Gestion des Ressources</h1>
+                <p class="text-gray-400">Bienvenue, <span class="text-white font-semibold">{{ user.username }}</span></p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'liste_notifications' %}" class="relative p-3 glass-card rounded-xl hover:border-gold transition-colors">
+                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                </a>
+                <div class="flex items-center gap-3 glass-card px-4 py-2 rounded-xl">
+                    <div class="w-10 h-10 gradient-gold rounded-full flex items-center justify-center text-deep-black font-bold">
+                        {{ user.username|make_list|first|upper }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">{{ user.username }}</p>
+                        <p class="text-xs text-gray-400">Trésorier</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mission de la commission -->
+        <div class="glass-card rounded-2xl p-6 mb-8 border-l-4 border-gold">
+            <h3 class="font-bold text-lg mb-2 text-gold">Mission de la commission</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-green-900/30 rounded-lg flex items-center justify-center text-green-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Collecte & Trésorerie</p>
+                        <p class="text-xs text-gray-400">Encaisser les cotisations et sécuriser l'argent</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Suivi Budgétaire</p>
+                        <p class="text-xs text-gray-400">Suivre les dépenses, classer les justificatifs</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-violet-900/30 rounded-lg flex items-center justify-center text-violet-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Transparence</p>
+                        <p class="text-xs text-gray-400">Assurer la transparence financière entre les membres</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-red-900/30 rounded-lg flex items-center justify-center text-red-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Gestion des risques</p>
+                        <p class="text-xs text-gray-400">Relever les impayés</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-green-500">
+                <p class="text-gray-400 text-xs uppercase">Total Entrées</p>
+                <p class="text-2xl font-black text-green-400 mt-2">{{ total_entrees|default:"0" }} <span class="text-sm">CFA</span></p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-red-500">
+                <p class="text-gray-400 text-xs uppercase">Total Dépenses</p>
+                <p class="text-2xl font-black text-red-400 mt-2">{{ total_sorties|default:"0" }} <span class="text-sm">CFA</span></p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-gold">
+                <p class="text-gray-400 text-xs uppercase">Solde Net</p>
+                <p class="text-2xl font-black text-gold mt-2">{{ solde|default:"0" }} <span class="text-sm">CFA</span></p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-orange-warning">
+                <p class="text-gray-400 text-xs uppercase">Impayés</p>
+                <p class="text-2xl font-black text-orange-warning mt-2">{{ nb_impayes|default:"0" }}</p>
+                <p class="text-xs text-gray-500 mt-1">{{ total_impayes|default:"0" }} CFA</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-violet-spiritual">
+                <p class="text-gray-400 text-xs uppercase">Entrées ce mois</p>
+                <p class="text-2xl font-black text-violet-spiritual mt-2">{{ entrees_mois|default:"0" }} <span class="text-sm">CFA</span></p>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Transactions Récentes -->
+            <div class="lg:col-span-2 glass-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        Transactions Récentes
+                    </h3>
+                    <a href="{% url 'finance' %}" class="text-gold text-sm hover:underline">Voir tout</a>
+                </div>
+                <div class="space-y-3">
+                    {% for transaction in transactions_recents %}
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full {% if transaction.type_mouvement == 'ENTREE' %}bg-green-900/30{% else %}bg-red-900/30{% endif %} flex items-center justify-center {% if transaction.type_mouvement == 'ENTREE' %}text-green-400{% else %}text-red-400{% endif %} font-bold text-xs">
+                                {% if transaction.type_mouvement == 'ENTREE' %}IN{% else %}OUT{% endif %}
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">{{ transaction.description }}</p>
+                                <p class="text-[10px] text-gray-500 uppercase">{{ transaction.date_transaction }} • {{ transaction.get_categorie_display }}</p>
+                            </div>
+                        </div>
+                        <span class="font-mono {% if transaction.type_mouvement == 'ENTREE' %}text-green-400{% else %}text-red-400{% endif %} font-bold">
+                            {% if transaction.type_mouvement == 'ENTREE' %}+{% else %}-{% endif %}{{ transaction.montant }} CFA
+                        </span>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-8 text-gray-500">
+                        <p>Aucune transaction enregistrée</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Actions Rapides -->
+            <div class="space-y-6">
+                <!-- Nouvelle Transaction -->
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="font-display font-bold text-xl mb-4 text-gold">Nouvelle Transaction</h3>
+                    <form action="{% url 'ajout_transaction' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="space-y-3">
+                            <select name="type_transaction" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                                <option value="">Type</option>
+                                <option value="COTISATION">Cotisation</option>
+                                <option value="COLLECTE">Collecte</option>
+                                <option value="DON">Don</option>
+                                <option value="DEPENSE">Dépense</option>
+                                <option value="ACHAT">Achat</option>
+                                <option value="SOUTIEN">Soutien social</option>
+                            </select>
+                            <select name="type_mouvement" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                                <option value="">Mouvement</option>
+                                <option value="ENTREE">Entrée</option>
+                                <option value="SORTIE">Sortie</option>
+                            </select>
+                            <input type="number" name="montant" placeholder="Montant (CFA)" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                            <input type="text" name="description" placeholder="Libellé" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                        </div>
+                        <button type="submit" class="w-full mt-4 py-3 bg-violet-spiritual text-white font-bold rounded-xl hover:bg-violet-600 transition-colors">ENVOYER</button>
+                    </form>
+                </div>
+
+                <!-- Ajouter un Impayé -->
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="font-display font-bold text-xl mb-4 text-orange-warning">Signaler un Impayé</h3>
+                    <form action="{% url 'ajout_impaye' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="space-y-3">
+                            <select name="membre" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                                <option value="">Membre</option>
+                                {% for membre in membres %}
+                                <option value="{{ membre.id }}">{{ membre.prenom }} {{ membre.nom }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="number" name="montant_du" placeholder="Montant dû (CFA)" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                            <input type="date" name="periode_debut" placeholder="Période début" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                            <input type="date" name="date_echeance" placeholder="Date échéance" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                        </div>
+                        <button type="submit" class="w-full mt-4 py-3 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition-colors">SIGNALER</button>
+                    </form>
+                </div>
+
+                <!-- Créer un Budget -->
+                <div class="glass-card p-6 rounded-2xl">
+                    <h3 class="font-display font-bold text-xl mb-4 text-blue-400">Créer un Budget</h3>
+                    <form action="{% url 'creer_budget' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="space-y-3">
+                            <select name="categorie" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                                <option value="">Catégorie</option>
+                                <option value="LOGISTIQUE">Logistique</option>
+                                <option value="EQUIPEMENT">Équipement</option>
+                                <option value="FORMATION">Formation</option>
+                                <option value="COMMUNICATION">Communication</option>
+                                <option value="SOCIAL">Action sociale</option>
+                                <option value="CULTUREL">Activité culturelle</option>
+                            </select>
+                            <input type="number" name="annee" placeholder="Année" value="{{ timezone.now.year }}" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                            <input type="number" name="montant_prevu" placeholder="Montant prévu (CFA)" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm" required>
+                        </div>
+                        <button type="submit" class="w-full mt-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors">CRÉER</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Impayés en Retard -->
+        <div class="mt-8 glass-card rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <svg class="w-5 h-5 text-orange-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    Impayés en Retard
+                </h3>
+                <a href="{% url 'liste_impayes' %}" class="text-gold text-sm hover:underline">Voir tout</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-xs text-gray-400 border-b border-gray-700">
+                            <th class="pb-3">Membre</th>
+                            <th class="pb-3">Montant dû</th>
+                            <th class="pb-3">Restant</th>
+                            <th class="pb-3">Échéance</th>
+                            <th class="pb-3">Statut</th>
+                            <th class="pb-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for impaye in impayes_en_retard %}
+                        <tr class="border-b border-gray-800">
+                            <td class="py-3">{{ impaye.membre.prenom }} {{ impaye.membre.nom }}</td>
+                            <td class="py-3 text-red-400 font-bold">{{ impaye.montant_du }} CFA</td>
+                            <td class="py-3 text-orange-warning font-bold">{{ impaye.montant_restant }} CFA</td>
+                            <td class="py-3">{{ impaye.date_echeance }}</td>
+                            <td class="py-3">
+                                <span class="px-2 py-1 rounded-full text-xs {% if impaye.statut == 'EN_RETARD' %}bg-red-900/50 text-red-400{% elif impaye.statut == 'RELANCE' %}bg-orange-900/50 text-orange-400{% else %}bg-gray-700 text-gray-400{% endif %}">
+                                    {{ impaye.get_statut_display }}
+                                </span>
+                            </td>
+                            <td class="py-3">
+                                <div class="flex gap-2">
+                                    <a href="{% url 'relancer_impaye' impaye.id %}" class="px-2 py-1 bg-orange-600/20 text-orange-400 rounded hover:bg-orange-600/40 text-xs">Relancer</a>
+                                    <a href="{% url 'payer_impaye' impaye.id %}" class="px-2 py-1 bg-green-600/20 text-green-400 rounded hover:bg-green-600/40 text-xs">Payer</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="py-8 text-center text-gray-500">Aucun impayé en retard</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

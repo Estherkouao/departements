@@ -1,0 +1,186 @@
+{% extends 'responsable/base_responsable.html' %}
+
+{% block title %}Dashboard Responsable{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <header class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-4xl font-display font-bold text-depart-green mb-2">Tableau de <span class="text-depart-gold">Bord</span></h1>
+            <p class="text-gray-600">Bienvenue, <span class="text-gray-900 font-semibold">{{ user.username }}</span></p>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="{% url 'liste_notifications' %}" class="relative p-3 glass-card rounded-xl hover:border-depart-green transition-all">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                {% if notifications %}
+                <span class="absolute -top-1 -right-1 w-5 h-5 bg-depart-red rounded-full text-xs flex items-center justify-center text-white">{{ notifications.count }}</span>
+                {% endif %}
+            </a>
+            <div class="flex items-center gap-3 glass-card px-4 py-2 rounded-xl">
+                <div class="w-10 h-10 green-gradient rounded-full flex items-center justify-center text-white font-bold">
+                    {{ user.username|make_list|first|upper }}
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-800">{{ user.username }}</p>
+                    <p class="text-xs text-gray-500">Responsable</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <a href="{% url 'gestion' %}" class="glass-card p-6 rounded-2xl border-l-4 border-depart-green hover:shadow-xl transition-all cursor-pointer">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-xs uppercase tracking-wider font-semibold">Gestion des Rapports</p>
+                    <p class="text-3xl font-black mt-2 text-depart-green">{{ total_rapports|default:"0" }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: rgba(0, 108, 103, 0.1);">
+                    <svg class="w-6 h-6 text-depart-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">Soumettre vos rapports</p>
+        </a>
+
+        <a href="{% url 'communion' %}" class="glass-card p-6 rounded-2xl border-l-4 border-depart-green hover:shadow-xl transition-all cursor-pointer">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-xs uppercase tracking-wider font-semibold">Communion + Intégration</p>
+                    <p class="text-3xl font-black mt-2 text-depart-green">{{ nb_stagiaires|default:"0" }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: rgba(0, 108, 103, 0.1);">
+                    <svg class="w-6 h-6 text-depart-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">{{ evenements_a_venir|length }} événements à venir</p>
+        </a>
+
+        <a href="{% url 'formation' %}" class="glass-card p-6 rounded-2xl border-l-4 border-depart-green hover:shadow-xl transition-all cursor-pointer">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-xs uppercase tracking-wider font-semibold">Formation Technique</p>
+                    <p class="text-3xl font-black mt-2 text-depart-green">{{ formations|length|default:"0" }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: rgba(0, 108, 103, 0.1);">
+                    <svg class="w-6 h-6 text-depart-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">{{ groupes|length }} groupes de service</p>
+        </a>
+
+        <a href="{% url 'finance_departement' %}" class="glass-card p-6 rounded-2xl border-l-4 border-depart-gold hover:shadow-xl transition-all cursor-pointer">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-xs uppercase tracking-wider font-semibold">Ressources Financières</p>
+                    <p class="text-3xl font-black mt-2 text-depart-gold">{{ solde|default:"0" }} <span class="text-sm">CFA</span></p>
+                </div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: rgba(210, 175, 31, 0.1);">
+                    <svg class="w-6 h-6 text-depart-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">Solde actuel</p>
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="{% url 'communication' %}" class="glass-card p-6 rounded-2xl border-l-4 border-depart-green hover:shadow-xl transition-all cursor-pointer">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-xs uppercase tracking-wider font-semibold">Communication</p>
+                    <p class="text-3xl font-black mt-2 text-depart-green">{{ actualites|length|default:"0" }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: rgba(0, 108, 103, 0.1);">
+                    <svg class="w-6 h-6 text-depart-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">Publier une actualité</p>
+        </a>
+
+        <a href="{% url 'gestion_services' %}" class="glass-card p-6 rounded-2xl border-l-4 border-depart-green hover:shadow-xl transition-all cursor-pointer">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-xs uppercase tracking-wider font-semibold">Gestion des Services</p>
+                    <p class="text-3xl font-black mt-2 text-depart-green">{{ groupes|length|default:"0" }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background-color: rgba(0, 108, 103, 0.1);">
+                    <svg class="w-6 h-6 text-depart-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm mt-2">Gérer les rotations</p>
+        </a>
+    </div>
+    
+    <!-- Incidents résolus -->
+    {% if incidents_resolus %}
+    <div class="glass-card p-6 rounded-2xl mt-6">
+        <h3 class="font-bold text-lg text-depart-green mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Incidents Résolus Récemment
+        </h3>
+        <div class="space-y-3">
+            {% for incident in incidents_resolus %}
+            <div class="p-4 rounded-lg border-l-4" style="background-color: rgba(0, 108, 103, 0.05); border-color: #006C67;">
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="font-semibold text-gray-800">{{ incident.titre }}</h4>
+                    <span class="px-2 py-1 text-xs font-bold rounded" style="background-color: rgba(0, 108, 103, 0.2); color: #006C67;">{{ incident.get_statut_display }}</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">Membre concerné: {{ incident.membre_concerne.nom_complet }}</p>
+                {% if incident.resolution %}
+                <div class="mt-2 p-3 bg-white rounded border" style="border-color: rgba(0, 108, 103, 0.2);">
+                    <p class="text-xs font-semibold mb-1" style="color: #006C67;">✓ Résolution:</p>
+                    <p class="text-sm text-gray-700">{{ incident.resolution }}</p>
+                </div>
+                {% endif %}
+                {% if incident.date_resolution %}
+                <p class="text-xs text-gray-500 mt-2">Résolu le {{ incident.date_resolution|date:"d/m/Y" }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Graphique des groupes de service
+        const groupesCtx = document.getElementById('groupesChart');
+        if (groupesCtx) {
+            new Chart(groupesCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ groupes_labels|safe }},
+                    datasets: [{
+                        label: 'Nombre de membres',
+                        data: {{ groupes_membres_count|safe }},
+                        backgroundColor: 'rgba(0, 108, 103, 0.7)',
+                        borderColor: '#006C67',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#666'
+                            },
+                            grid: { color: 'rgba(0,0,0,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#666' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Membre</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deep-black': '#1A1A1A',
+                        'gold': '#FFD700',
+                        'gold-darker': '#B8860B',
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Montserrat', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f0f0f; color: #FFFFFF; }
+        .glass-card { background: rgba(38, 38, 38, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(0, 108, 103, 0.2); }
+        .custom-input { background: #333; border: 1px solid #444; color: white; }
+        .custom-input:focus { border-color: #006C67; outline: none; }
+    </style>
+</head>
+<body class="min-h-screen">
+    {% include 'partials/sidebar_admin.html' %}
+
+    <main class="ml-64 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-display font-black">Modifier le <span class="text-primary-age">Membre</span></h1>
+                <p class="text-gray-500">Modification des informations de <span class="text-white font-semibold">{{ membre.prenom }} {{ membre.nom }}</span></p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'liste_membres' %}" class="px-4 py-2 border border-gray-600 text-gray-500 rounded-lg hover:bg-gray-800 transition-colors">
+                    Retour à la liste
+                </a>
+            </div>
+        </header>
+
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg mb-2 {% if message.tags == 'success' %}bg-green-900/40 text-green-400 border border-green-500/30{% else %}bg-red-900/40 text-red-400 border border-red-500/30{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="glass-card rounded-2xl p-6">
+            <form method="POST" action="{% url 'modifier_membre' membre.id %}" class="space-y-6">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-2">Nom *</label>
+                        <input type="text" name="nom" value="{{ membre.nom }}" required class="w-full px-4 py-3 rounded-lg custom-input" placeholder="Nom de famille">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-2">Prénom *</label>
+                        <input type="text" name="prenom" value="{{ membre.prenom }}" required class="w-full px-4 py-3 rounded-lg custom-input" placeholder="Prénom">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-2">Email</label>
+                        <input type="email" name="email" value="{{ membre.email|default:'' }}" class="w-full px-4 py-3 rounded-lg custom-input" placeholder="email@exemple.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-2">Téléphone</label>
+                        <input type="text" name="telephone" value="{{ membre.telephone|default:'' }}" class="w-full px-4 py-3 rounded-lg custom-input" placeholder="+225 00 00 00 00">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-500 mb-2">Adresse</label>
+                    <textarea name="adresse" rows="2" class="w-full px-4 py-3 rounded-lg custom-input" placeholder="Adresse complète">{{ membre.adresse|default:'' }}</textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-2">Rôle *</label>
+                        <select name="role" required class="w-full px-4 py-3 rounded-lg custom-input">
+                            <option value="MEMBRE" {% if membre.role == 'MEMBRE' %}selected{% endif %}>Membre</option>
+                            <option value="CHANTRE" {% if membre.role == 'CHANTRE' %}selected{% endif %}>Chantre</option>
+                            <option value="MUSICIEN" {% if membre.role == 'MUSICIEN' %}selected{% endif %}>Musicien</option>
+                            <option value="TECHNICIEN" {% if membre.role == 'TECHNICIEN' %}selected{% endif %}>Technicien</option>
+                            <option value="ACCUEIL" {% if membre.role == 'ACCUEIL' %}selected{% endif %}>Accueil</option>
+                            <option value="LOUEUR" {% if membre.role == 'LOUEUR' %}selected{% endif %}>Loueur</option>
+                            <option value="SENTINELLE" {% if membre.role == 'SENTINELLE' %}selected{% endif %}>Sentinelle</option>
+                            <option value="RESPONSABLE" {% if membre.role == 'RESPONSABLE' %}selected{% endif %}>Responsable</option>
+                            <option value="STAGIAIRE" {% if membre.role == 'STAGIAIRE' %}selected{% endif %}>Stagiaire</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-2">Statut</label>
+                        <select name="status" class="w-full px-4 py-3 rounded-lg custom-input">
+                            <option value="ACTIF" {% if membre.status == 'ACTIF' %}selected{% endif %}>Actif</option>
+                            <option value="INACTIF" {% if membre.status == 'INACTIF' %}selected{% endif %}>Inactif</option>
+                            <option value="EN_CONGE" {% if membre.status == 'EN_CONGE' %}selected{% endif %}>En congés</option>
+                            <option value="SUSPENDU" {% if membre.status == 'SUSPENDU' %}selected{% endif %}>Suspendu</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 p-4 bg-purple-900/20 rounded-lg border border-purple-500/30">
+                    <input type="checkbox" name="est_sentinelle" id="est_sentinelle" class="w-5 h-5 rounded bg-gray-700 border-gray-600 text-purple-500 focus:ring-purple-500" {% if membre.est_sentinelle %}checked{% endif %}>
+                    <label for="est_sentinelle" class="text-sm font-bold text-purple-400">Est une sentinelle</label>
+                </div>
+
+                <div id="groupe_sentinelle_div" class="{% if not membre.est_sentinelle %}hidden{% endif %}">
+                    <label class="block text-sm font-bold text-gray-500 mb-2">Groupe Sentinelle</label>
+                    <select name="groupe_sentinelle" class="w-full px-4 py-3 rounded-lg custom-input">
+                        <option value="">Sélectionner le groupe</option>
+                        <option value="A" {% if membre.groupe_sentinelle == 'A' %}selected{% endif %}>Groupe A</option>
+                        <option value="B" {% if membre.groupe_sentinelle == 'B' %}selected{% endif %}>Groupe B</option>
+                        <option value="C" {% if membre.groupe_sentinelle == 'C' %}selected{% endif %}>Groupe C</option>
+                        <option value="D" {% if membre.groupe_sentinelle == 'D' %}selected{% endif %}>Groupe D</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-4 pt-4">
+                    <a href="{% url 'liste_membres' %}" class="px-6 py-3 border border-gray-600 text-gray-500 rounded-lg font-bold hover:bg-gray-800 transition-colors">
+                        Annuler
+                    </a>
+                    <button type="submit" class="px-6 py-3 bg-[#006C67] text-white rounded-lg font-bold hover:bg-[#00554F] transition-colors">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const checkbox = document.getElementById('est_sentinelle');
+        const groupeDiv = document.getElementById('groupe_sentinelle_div');
+        
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                groupeDiv.classList.remove('hidden');
+            } else {
+                groupeDiv.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

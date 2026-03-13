@@ -1,0 +1,189 @@
+{% extends 'responsable/base_responsable.html' %}
+
+{% block title %}Formation Technique{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <header class="mb-8">
+        <h1 class="text-4xl font-display font-bold text-pure-blue mb-2">Formation <span class="text-pure-green">Technique</span></h1>
+        <p class="text-gray-600">Assurer la qualité et l'excellence du service</p>
+    </header>
+
+
+
+    <div class="flex gap-4 mb-8">
+        <button onclick="openModal('formationModal')" class="px-6 py-3 blue-gradient text-white font-bold rounded-xl hover:shadow-lg transition-all">
+            + Nouvelle Formation
+        </button>
+    </div>
+
+    <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="p-6 border-b-2 border-pure-green/20">
+            <h3 class="font-bold text-xl text-pure-green-dark">Formations Disponibles</h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for formation in formations %}
+                <div class="p-4 bg-green-50 rounded-xl border-l-4 {% if formation.statut_validation == 'VALIDEE' %}border-green-500{% elif formation.statut_validation == 'REJETEE' %}border-red-500{% else %}border-yellow-500{% endif %} hover:shadow-md transition-all">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-bold text-gray-800">{{ formation.titre }}</h4>
+                        <div class="flex gap-2">
+                            {% if formation.est_en_ligne %}
+                            <span class="px-2 py-1 bg-pure-blue/20 text-pure-blue text-xs font-bold rounded">EN LIGNE</span>
+                            {% endif %}
+                            <span class="px-2 py-1 {% if formation.statut_validation == 'VALIDEE' %}bg-green-500/20 text-green-700{% elif formation.statut_validation == 'REJETEE' %}bg-red-500/20 text-red-700{% else %}bg-yellow-500/20 text-yellow-700{% endif %} text-xs font-bold rounded">
+                                {{ formation.get_statut_validation_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">{{ formation.description|truncatechars:100 }}</p>
+                    
+                    {% if formation.image %}
+                    <div class="mb-3">
+                        <img src="{{ formation.image.url }}" alt="{{ formation.titre }}" class="w-full h-32 object-cover rounded-lg">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex justify-between items-center text-xs mb-2">
+                        <span class="text-gray-500">{{ formation.date_debut|date:"d M Y" }} {% if formation.date_fin %}- {{ formation.date_fin|date:"d M Y" }}{% endif %}</span>
+                        <span class="px-2 py-1 bg-pure-green/20 text-pure-green-dark rounded font-semibold">{{ formation.get_statut_display }}</span>
+                    </div>
+                    
+                    <div class="flex gap-2 mt-2">
+                        {% if formation.video %}
+                        <a href="{{ formation.video.url }}" target="_blank" class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded flex items-center gap-1 hover:bg-red-200">
+                            📹 Vidéo
+                        </a>
+                        {% endif %}
+                        {% if formation.supports %}
+                        <a href="{{ formation.supports.url }}" target="_blank" class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded flex items-center gap-1 hover:bg-blue-200">
+                            📄 PDF
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    {% if formation.lien_online %}
+                    <div class="mt-2">
+                        <a href="{{ formation.lien_online }}" target="_blank" class="text-xs text-blue-600 hover:text-blue-800 underline flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            Accéder à la formation en ligne
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if formation.participants.count > 0 %}
+                    <p class="text-xs text-gray-500 mt-2">{{ formation.participants.count }} participant(s)</p>
+                    {% endif %}
+                    {% if formation.lieu %}
+                    <p class="text-xs text-gray-600 mt-2">📍 {{ formation.lieu }}</p>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="col-span-2 p-8 text-center text-gray-500">
+                    <p>Aucune formation prévue</p>
+                    <button onclick="openModal('formationModal')" class="mt-2 text-pure-green-dark text-sm underline font-semibold">Créer une formation</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FORMATION MODAL -->
+<div id="formationModal" class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg p-8 rounded-2xl border-2 border-pure-blue max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-display font-bold text-pure-blue">Nouvelle Formation</h3>
+            <button onclick="closeModal('formationModal')" class="text-gray-600 hover:text-gray-900">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <form action="{% url 'ajout_formation' %}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Titre</label>
+<input type="text" name="titre" placeholder="Titre de la formation" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-900 text-sm focus:border-pure-blue focus:outline-none" required>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                <textarea name="description" rows="3" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-900 text-sm focus:border-pure-blue focus:outline-none" placeholder="Description de la formation..." required></textarea>
+            </div>
+            
+            {% if is_admin %}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Département destinataire</label>
+<select name="departement_destinataire" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-900 text-sm focus:border-pure-blue focus:outline-none">
+                    <option value="">Tous les départements</option>
+                    <option value="ADA">ADA</option>
+                    <option value="ADN">ADN</option>
+                    <option value="CLASSE_BATEME">Classe de Batême</option>
+                    <option value="COMMUNICATION">Communication</option>
+                    <option value="ECODIM">ECODIM</option>
+                    <option value="EVANGELISATION">Evangelisation</option>
+                    <option value="GESTION_CULTE">Gestion de Culte</option>
+                    <option value="LOGISTIQUE">Logistique</option>
+                    <option value="MUSIQUE_LOUANGE">Musique et Louange</option>
+                    <option value="PORTIER">Portier</option>
+                    <option value="SAINTE_CENE">Sainte Cène</option>
+                </select>
+            </div>
+            {% endif %}
+            
+<div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Date début</label>
+                    <input type="date" name="date_debut" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-900 text-sm focus:border-pure-blue focus:outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Date fin</label>
+                    <input type="date" name="date_fin" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-900 text-sm focus:border-pure-blue focus:outline-none">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Lieu</label>
+                <input type="text" name="lieu" placeholder="Lieu de la formation" class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-900 text-sm focus:border-pure-blue focus:outline-none">
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" name="est_en_ligne" id="est_en_ligne" class="w-4 h-4">
+                <label for="est_en_ligne" class="text-sm text-gray-700">Formation en ligne</label>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Lien en ligne</label>
+                <input type="url" name="lien_online" placeholder="https://..." class="w-full p-3 rounded-lg bg-white border-2 border-gray-300 text-gray-900 text-sm focus:border-pure-blue focus:outline-none">
+            </div>
+            
+<div class="border-t-2 border-gray-200 pt-4">
+                <h4 class="text-sm font-bold text-gray-700 mb-3">📎 Supports de formation</h4>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">📹 Vidéo</label>
+                        <input type="file" name="video" accept="video/*" class="w-full p-2 text-sm text-gray-700 border-2 border-gray-300 rounded-lg focus:border-pure-blue focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">🖼️ Image/Affiche</label>
+                        <input type="file" name="image" accept="image/*" class="w-full p-2 text-sm text-gray-700 border-2 border-gray-300 rounded-lg focus:border-pure-blue focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">📄 Document PDF</label>
+                        <input type="file" name="supports" accept=".pdf,.doc,.docx" class="w-full p-2 text-sm text-gray-700 border-2 border-gray-300 rounded-lg focus:border-pure-blue focus:outline-none">
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="w-full py-3 blue-gradient text-white font-bold rounded-lg text-sm hover:shadow-lg transition-all">
+                CRÉER LA FORMATION
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+</script>
+{% endblock %}
